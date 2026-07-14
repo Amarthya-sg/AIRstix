@@ -18,21 +18,109 @@
 
 ## Screenshots
 
+---
+
+### Main Menu
+
 <div align="center">
-
-| Main Menu | Gamepad |
-|:-:|:-:|
-| <img src="Images/01_main_menu.jpg" width="420" alt="Main Menu"/> | <img src="Images/04_gamepad.jpg" width="420" alt="Live Gamepad"/> |
-
-| Connect Screen | Layout Profiles |
-|:-:|:-:|
-| <img src="Images/05_connect.jpg" width="420" alt="Connect Screen"/> | <img src="Images/03_layout_profiles.jpg" width="420" alt="Layout Profiles"/> |
-
-| Settings |
-|:-:|
-| <img src="Images/02_settings.jpg" width="420" alt="Settings"/> |
-
+  <img src="Images/01_main_menu.jpg" width="720" alt="Main Menu"/>
 </div>
+
+The app opens directly into the HUD-style main hub. A live connection status pill at the top center shows **NOT CONNECTED** / **CONNECTING** / **CONNECTED** at a glance. The central **AIRstix** circle is the primary action button — tap **▶ Start** to go to the connect screen, or resume an active session. Four surrounding buttons give quick access to every major section:
+
+| Button | What it does |
+|---|---|
+| **PROFILE** | Open the Layout Profiles dialog to switch, create, import, or delete saved layouts |
+| **CUSTOMIZE** | Enter the visual drag-and-drop gamepad layout editor |
+| **SETTINGS** | Open the settings screen (display and behavior options) |
+| **ABOUT** | App info and version details |
+
+The **EXIT** button at the bottom cleanly terminates the app. Corner bracket decorations (HUD viewfinder) frame the screen, part of the sci-fi aesthetic that carries through every screen.
+
+---
+
+### Live Gamepad
+
+<div align="center">
+  <img src="Images/04_gamepad.jpg" width="720" alt="Live Gamepad"/>
+</div>
+
+The full controller layout rendered on a dotted-grid background. Every control streams input to the PC server in real time at the configured polling interval (default 80 ms):
+
+| Zone | Controls |
+|---|---|
+| Top center | **LSHLDR** (LB) and **RSHLDR** (RB) shoulder buttons — pill-shaped, tap or hold |
+| Center top | **Eye (👁)** preview toggle and **✕** close/settings button |
+| Center row | **− (Select)**, **○ (Home)**, **⌂ (Home)**, **+ (Start)** — the four system buttons |
+| Center bottom | **⚙ Settings** — navigates back to Main Menu without dropping the connection |
+| Top left | **Left Analog Stick** — circular thumb area with neon fill indicator |
+| Bottom left | **D-Pad** — four individual directional arrow buttons |
+| Bottom left corner | **LT trigger** — tab-style trigger tile |
+| Top right | **A / B / X / Y** face buttons — color-coded (green A, red B, blue X, olive Y) |
+| Bottom right | **Right Analog Stick** |
+| Bottom right corner | **RT trigger** — tab-style trigger tile |
+
+Tapping ⚙ sends a final zero-state frame (releases all buttons) and returns to the Main Menu while keeping the TCP session alive.
+
+---
+
+### Connect Screen
+
+<div align="center">
+  <img src="Images/05_connect.jpg" width="720" alt="Connect Screen"/>
+</div>
+
+Two parallel connection methods presented side by side, both framed by the HUD corner brackets:
+
+**01 · Quick Pair**
+- Tap **Scan QR Code** to open the camera and scan the QR code displayed by the AIRstix server — IP and port are parsed automatically, no typing needed.
+- A **Download Server** link provides a shortcut to get the server software.
+
+**02 · Manual Entry**
+- Type the server's **IP Address** and **Port** directly into the text fields.
+- Tap **Connect →** to initiate the TCP handshake.
+- Input is validated before connecting — the button stays disabled until a valid IP and port are entered.
+
+If the connection fails, a **Run Diagnostics** flow checks each step: Wi-Fi → local IP → subnet → ping → port reachability.
+
+---
+
+### Layout Profiles
+
+<div align="center">
+  <img src="Images/03_layout_profiles.jpg" width="720" alt="Layout Profiles"/>
+</div>
+
+Accessed via **PROFILE** on the Main Menu. Stores and manages multiple named gamepad layouts:
+
+- **Default Layout** — always present, marked with a teal left border and a ✓ checkmark when active. Cannot be deleted.
+- **Custom profiles** (e.g. `1b`, `2b`) — created from the Customization editor or by importing a JSON file. Each shows a folder icon and a 🗑 delete button.
+- **Tap any profile** to load it instantly. A snackbar at the bottom confirms which layout was loaded ("Default Layout loaded").
+- **Create Profile** — saves the current layout under a new name.
+- **Close** — dismisses the dialog and returns to the Main Menu.
+
+---
+
+### Settings
+
+<div align="center">
+  <img src="Images/02_settings.jpg" width="720" alt="Settings"/>
+</div>
+
+Split into two sections, separated by a vertical divider:
+
+**01 · Display**
+- **Theme Color** — dropdown picker to choose the app's neon accent color (Blue selected by default; options include Red, Green, Yellow, Purple, Orange, Pink). Changes the color of all interactive elements, borders, and highlights across every screen.
+- **Polling Interval (ms)** — spin box (↓ / ↑ arrows) controlling how often gamepad state is sent to the server. Default is **80 ms**. Lower values reduce input lag; higher values reduce CPU and network load.
+
+**02 · Behavior**
+- **Remember IP Address and Port** — toggle. When on, the last-used server address is pre-filled on the Connect screen.
+- **Haptic Feedback (Vibrations)** — toggle. When enabled, the phone vibrates on every button press. An additional **Haptic Intensity** selector (Soft / Medium / Strong) appears when this is turned on.
+
+Three action buttons at the bottom:
+- **Reset** — reverts all settings to factory defaults
+- **Save** — persists the current values (highlighted in teal as the primary action)
+- **Cancel** — discards changes and returns to Main Menu
 
 ---
 
