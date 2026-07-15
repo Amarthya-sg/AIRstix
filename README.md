@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="fastlane/metadata/android/en-US/images/icon.png" width="120" alt="AIRstix icon" />
+  <img src="fastlane/metadata/android/en-US/images/featureGraphic.png" width="600" alt="AIRstix banner" />
 
   # AIRstix
 
@@ -127,19 +127,42 @@ Three action buttons at the bottom:
 
 ## Table of Contents
 
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Getting Started](#getting-started)
-- [Connecting to a Server](#connecting-to-a-server)
-- [Gamepad Layout](#gamepad-layout)
-- [Customization](#customization)
-- [Settings](#settings)
-- [Building for Release](#building-for-release)
-- [Testing](#testing)
-- [Project Structure](#project-structure)
-- [Tech Stack](#tech-stack)
-- [Permissions](#permissions)
-- [License](#license)
+- [AIRstix](#airstix)
+  - [Screenshots](#screenshots)
+    - [Main Menu](#main-menu)
+    - [Live Gamepad](#live-gamepad)
+    - [Connect Screen](#connect-screen)
+    - [Layout Profiles](#layout-profiles)
+    - [Settings](#settings)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+    - [Controller](#controller)
+    - [Connection](#connection)
+    - [Customization](#customization)
+    - [Display \& Feel](#display--feel)
+    - [Performance](#performance)
+  - [How It Works](#how-it-works)
+    - [Wire Format](#wire-format)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Clone](#clone)
+    - [Build](#build)
+    - [Install on a connected device](#install-on-a-connected-device)
+  - [Connecting to a Server](#connecting-to-a-server)
+  - [Gamepad Layout](#gamepad-layout)
+  - [Customization](#customization-1)
+    - [Options menu](#options-menu)
+    - [Layout Profiles](#layout-profiles-1)
+  - [Settings](#settings-1)
+  - [Building for Release](#building-for-release)
+  - [Testing](#testing)
+    - [Test Coverage](#test-coverage)
+    - [CI](#ci)
+  - [Project Structure](#project-structure)
+  - [Tech Stack](#tech-stack)
+  - [Permissions](#permissions)
+  - [Related](#related)
+  - [License](#license)
 
 ---
 
