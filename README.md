@@ -7,6 +7,7 @@
 
   AIRstix connects to the [AIRstix server](https://github.com/Amarthya-sg/AIRstix-server) over your local Wi-Fi and streams real-time gamepad input using a low-latency TCP connection with binary serialization.
 
+  ![Server Target](https://img.shields.io/badge/Server-Linux%20%7C%20Fedora-blue?logo=fedora)
   ![Android](https://img.shields.io/badge/Android-API%2026%2B-brightgreen?logo=android)
   ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blueviolet?logo=kotlin)
   ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material3-blue?logo=jetpackcompose)
