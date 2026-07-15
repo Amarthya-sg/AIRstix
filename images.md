@@ -50,7 +50,7 @@
 ---
 
 ### F-Droid / Fastlane Icon
-> Icon used by the Fastlane supply tool for F-Droid and other store submissions.
+> Icon used by the Fastlane supply tool for F-Droid and other store submissions. Uses the same Play Store icon as the single source of truth.
 
 ![Fastlane Icon](fastlane/metadata/android/en-US/images/icon.png)
 
@@ -59,7 +59,7 @@
 ---
 
 ### Feature Graphic
-> Banner graphic used on the Play Store and F-Droid store listing page (1024×500).
+> Banner graphic used on the Play Store and F-Droid store listing page. Uses the same Play Store icon as the single source of truth.
 
 ![Feature Graphic](fastlane/metadata/android/en-US/images/featureGraphic.png)
 
