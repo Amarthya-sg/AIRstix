@@ -526,6 +526,12 @@ GitHub Actions runs on every push and pull request:
 
 ---
 
+## Acknowledgements
+
+AIRstix was inspired by [VirtualGamePad](https://github.com/kitswas/VirtualGamePad-Mobile) by [Swastik Pal (@kitswas)](https://github.com/kitswas) — an open-source project that pioneered using an Android phone as a wireless gamepad for PC. The data exchange format used in AIRstix ([VGP_Data_Exchange](https://github.com/kitswas/VGP_Data_Exchange)) originates from his work. Huge thanks for building something worth building on.
+
+---
+
 ## Related
 
 - **PC Server:** [AIRstix-server](https://github.com/Amarthya-sg/AIRstix-server) — the Linux-focused server that receives input from this app
