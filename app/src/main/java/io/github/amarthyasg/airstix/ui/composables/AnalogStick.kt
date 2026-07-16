@@ -83,17 +83,19 @@ private fun handleAnalogDrag(
     state: AnalogStickUiState,
     dragX: Float,
     dragY: Float,
-    maxOffset: Float,
+    valueMaxOffset: Float,
+    renderMaxOffset: Float,
     type: AnalogStickType,
     gamepadState: GamepadReading,
     view: android.view.View,
+    hapticEnabled: Boolean,
 ) {
     state.offsetX += dragX
     state.offsetY += dragY
 
     val magnitude = sqrt(state.offsetX * state.offsetX + state.offsetY * state.offsetY)
-    val normalizedDistance = (magnitude / maxOffset).coerceIn(0f, 1f)
-    if (normalizedDistance > 0.3f) {
+    val normalizedDistance = (magnitude / valueMaxOffset).coerceIn(0f, 1f)
+    if (normalizedDistance > 0.3f && hapticEnabled) {
         HapticUtils.performAnalogMovementFeedback(view, normalizedDistance)
     }
 
@@ -101,10 +103,12 @@ private fun handleAnalogDrag(
         return
     }
 
-    val scaleFactor = if (magnitude > maxOffset) maxOffset / magnitude else 1f
-    state.visualX = state.offsetX * scaleFactor
-    state.visualY = state.offsetY * scaleFactor
-    updateThumbstickValues(type, gamepadState, state.visualX / maxOffset, state.visualY / maxOffset)
+    val directionX = state.offsetX / magnitude
+    val directionY = state.offsetY / magnitude
+
+    state.visualX = directionX * normalizedDistance * renderMaxOffset
+    state.visualY = directionY * normalizedDistance * renderMaxOffset
+    updateThumbstickValues(type, gamepadState, directionX * normalizedDistance, directionY * normalizedDistance)
 }
 
 private fun toggleThumbstickButton(
@@ -112,19 +116,24 @@ private fun toggleThumbstickButton(
     type: AnalogStickType,
     gamepadState: GamepadReading,
     view: android.view.View,
+    hapticEnabled: Boolean,
 ) {
     val mask = thumbstickButtonMask(type)
     if (!state.isPressed) {
         state.isPressed = true
         gamepadState.ButtonsDown = gamepadState.ButtonsDown or mask
-        HapticUtils.performButtonPressFeedback(view)
+        if (hapticEnabled) {
+            HapticUtils.performButtonPressFeedback(view)
+        }
         return
     }
 
     state.isPressed = false
     gamepadState.ButtonsDown = gamepadState.ButtonsDown and mask.inv()
     gamepadState.ButtonsUp = gamepadState.ButtonsUp or mask
-    HapticUtils.performGestureEndFeedback(view)
+    if (hapticEnabled) {
+        HapticUtils.performGestureEndFeedback(view)
+    }
 }
 
 @Composable
@@ -138,6 +147,7 @@ fun AnalogStick(
     innerCircleRadius: Dp = 32.dp,
     gamepadState: GamepadReading,
     type: AnalogStickType,
+    hapticEnabled: Boolean = true,
 ) {
     val density = LocalDensity.current
     val view = LocalView.current
@@ -162,9 +172,12 @@ fun AnalogStick(
             ) {
                 val state = remember { AnalogStickUiState() }
 
-                // Calculate maximum offset once
-                val maxOffset = with(density) {
+                // Calculate maximum offsets once
+                val valueMaxOffset = with(density) {
                     (innerCircleRadius + outerCircleWidth).toPx()
+                }
+                val renderMaxOffset = with(density) {
+                    outerCircleWidth.toPx()
                 }
 
                 // Then draw the inner circle
@@ -182,11 +195,15 @@ fun AnalogStick(
                         .pointerInput(Unit) {
                             detectDragGestures(
                                 onDragStart = { _ ->
-                                    HapticUtils.performGestureStartFeedback(view)
+                                    if (hapticEnabled) {
+                                        HapticUtils.performGestureStartFeedback(view)
+                                    }
                                 },
                                 onDragEnd = {
                                     resetAnalogStick(state, type, gamepadState)
-                                    HapticUtils.performGestureEndFeedback(view)
+                                    if (hapticEnabled) {
+                                        HapticUtils.performGestureEndFeedback(view)
+                                    }
                                 },
                                 onDrag = { change, dragAmount ->
                                     change.consume()
@@ -194,10 +211,12 @@ fun AnalogStick(
                                         state = state,
                                         dragX = dragAmount.x,
                                         dragY = dragAmount.y,
-                                        maxOffset = maxOffset,
+                                        valueMaxOffset = valueMaxOffset,
+                                        renderMaxOffset = renderMaxOffset,
                                         type = type,
                                         gamepadState = gamepadState,
                                         view = view,
+                                        hapticEnabled = hapticEnabled,
                                     )
                                 }
                             )
@@ -205,7 +224,7 @@ fun AnalogStick(
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onLongPress = { _ ->
-                                    toggleThumbstickButton(state, type, gamepadState, view)
+                                    toggleThumbstickButton(state, type, gamepadState, view, hapticEnabled)
                                 }
                             )
                         }

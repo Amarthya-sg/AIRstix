@@ -71,6 +71,7 @@ private fun ButtonAnchor.toAlignment(): Alignment = when (this) {
 fun GamepadCustomizationEditor(
     buttonConfigs: Map<ButtonComponent, ButtonConfig>,
     onConfigChange: (ButtonComponent, ButtonConfig) -> Unit,
+    hapticFeedbackEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -116,6 +117,20 @@ fun GamepadCustomizationEditor(
                             checked = config.visible,
                             onCheckedChange = { onConfigChange(component, config.copy(visible = it)) }
                         )
+                    }
+
+                    if (hapticFeedbackEnabled) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Haptic", style = MaterialTheme.typography.bodyMedium)
+                            Switch(
+                                checked = config.hapticEnabled,
+                                onCheckedChange = { onConfigChange(component, config.copy(hapticEnabled = it)) }
+                            )
+                        }
                     }
 
                     if (config.visible) {
@@ -225,6 +240,7 @@ fun FullScreenGamepadCustomizer(
     buttonConfigs: Map<ButtonComponent, ButtonConfig>,
     faceButtonsGrouped: Boolean = true,
     dpadGrouped: Boolean = true,
+    hapticFeedbackEnabled: Boolean = true,
     onConfigChange: (ButtonComponent, ButtonConfig) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -665,6 +681,21 @@ fun FullScreenGamepadCustomizer(
                             Switch(
                                 checked = config.visible,
                                 onCheckedChange = { onConfigChange(component, config.copy(visible = it)) },
+                                modifier = Modifier.scale(0.8f)
+                            )
+                        }
+                    }
+
+                    if (hapticFeedbackEnabled) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Haptic", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
+                            Switch(
+                                checked = config.hapticEnabled,
+                                onCheckedChange = { onConfigChange(component, config.copy(hapticEnabled = it)) },
                                 modifier = Modifier.scale(0.8f)
                             )
                         }

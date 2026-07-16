@@ -84,6 +84,7 @@ fun DrawGamepad(
                     innerCircleRadius = (baseDp / 12 * config.scale).dp,
                     gamepadState = gamepadState,
                     type = AnalogStickType.LEFT,
+                    hapticEnabled = config.hapticEnabled,
                 )
             }
 
@@ -98,6 +99,7 @@ fun DrawGamepad(
                     innerCircleRadius = (baseDp / 12 * config.scale).dp,
                     gamepadState = gamepadState,
                     type = AnalogStickType.RIGHT,
+                    hapticEnabled = config.hapticEnabled,
                 )
             }
 
@@ -193,6 +195,7 @@ fun DrawGamepad(
                     type = TriggerType.LEFT,
                     size = (baseDp / 6 * config.scale).dp,
                     gamepadState = gamepadState,
+                    hapticEnabled = config.hapticEnabled,
                 )
             }
 
@@ -206,6 +209,7 @@ fun DrawGamepad(
                     type = TriggerType.RIGHT,
                     size = (baseDp / 6 * config.scale).dp,
                     gamepadState = gamepadState,
+                    hapticEnabled = config.hapticEnabled,
                 )
             }
 

@@ -38,6 +38,7 @@ fun Trigger(
     modifier: Modifier = Modifier,
     size: Dp = 64.dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
 
@@ -51,7 +52,9 @@ fun Trigger(
                 TriggerType.LEFT -> gamepadState.LeftTrigger = 1f
                 TriggerType.RIGHT -> gamepadState.RightTrigger = 1f
             }
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
         }
         onDispose {
             Log.d("TriggerButton", "Trigger ${type.name} released")
@@ -59,7 +62,9 @@ fun Trigger(
                 TriggerType.LEFT -> gamepadState.LeftTrigger = 0f
                 TriggerType.RIGHT -> gamepadState.RightTrigger = 0f
             }
-            HapticUtils.performButtonReleaseFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonReleaseFeedback(view)
+            }
         }
     }
 

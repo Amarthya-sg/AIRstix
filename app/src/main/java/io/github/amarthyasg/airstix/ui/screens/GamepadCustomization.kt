@@ -185,6 +185,7 @@ fun GamepadCustomizationScreen(
     val savedActiveProfileName by settingsRepository.activeProfileName.collectAsState(initial = "")
     val savedFaceButtonsGrouped by settingsRepository.faceButtonsGrouped.collectAsState(initial = true)
     val savedDpadGrouped by settingsRepository.dpadGrouped.collectAsState(initial = true)
+    val savedHapticFeedbackEnabled by settingsRepository.hapticFeedbackEnabled.collectAsState(initial = true)
 
     var tempButtonConfigs by remember { mutableStateOf<Map<ButtonComponent, ButtonConfig>>(emptyMap()) }
     var initialButtonConfigs by remember { mutableStateOf<Map<ButtonComponent, ButtonConfig>>(emptyMap()) }
@@ -299,6 +300,7 @@ fun GamepadCustomizationScreen(
                 },
                 faceButtonsGrouped = tempFaceButtonsGrouped,
                 dpadGrouped = tempDpadGrouped,
+                hapticFeedbackEnabled = savedHapticFeedbackEnabled,
                 onConfigChange = { component, newConfig ->
                     tempButtonConfigs = tempButtonConfigs + (component to newConfig)
                 },

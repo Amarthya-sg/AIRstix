@@ -34,6 +34,7 @@ fun ButtonConfigEditor(
     component: ButtonComponent,
     config: ButtonConfig,
     onConfigChange: (ButtonConfig) -> Unit,
+    hapticFeedbackEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var visible by rememberSaveable(config) { mutableStateOf(config.visible) }
@@ -78,6 +79,25 @@ fun ButtonConfigEditor(
                         onCheckedChange = {
                             visible = it
                             onConfigChange(config.copy(visible = it))
+                        }
+                    )
+                }
+            }
+
+            if (hapticFeedbackEnabled) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Haptic",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Switch(
+                        checked = config.hapticEnabled,
+                        onCheckedChange = {
+                            onConfigChange(config.copy(hapticEnabled = it))
                         }
                     )
                 }

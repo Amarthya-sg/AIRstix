@@ -72,6 +72,7 @@ fun ShoulderButton(
     modifier: Modifier = Modifier,
     size: Dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
     val gameButton = when (type) {
@@ -90,11 +91,15 @@ fun ShoulderButton(
     if (isPressed) {
         DisposableEffect(Unit) {
             Log.d(gameButton.name, "Pressed")
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
             gamepadState.ButtonsDown = gamepadState.ButtonsDown or gameButton.value
             onDispose {
                 Log.d(gameButton.name, "Released")
-                HapticUtils.performButtonReleaseFeedback(view)
+                if (hapticEnabled) {
+                    HapticUtils.performButtonReleaseFeedback(view)
+                }
                 gamepadState.ButtonsDown =
                     gamepadState.ButtonsDown and gameButton.value.inv()
                 gamepadState.ButtonsUp = gamepadState.ButtonsUp or gameButton.value
@@ -120,6 +125,7 @@ fun MenuButton(
     modifier: Modifier = Modifier,
     size: Dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
     val gameButton = when (type) {
@@ -143,11 +149,15 @@ fun MenuButton(
     if (isPressed) {
         DisposableEffect(Unit) {
             Log.d(gameButton.name, "Pressed")
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
             gamepadState.ButtonsDown = gamepadState.ButtonsDown or gameButton.value
             onDispose {
                 Log.d(gameButton.name, "Released")
-                HapticUtils.performButtonReleaseFeedback(view)
+                if (hapticEnabled) {
+                    HapticUtils.performButtonReleaseFeedback(view)
+                }
                 gamepadState.ButtonsDown =
                     gamepadState.ButtonsDown and gameButton.value.inv()
                 gamepadState.ButtonsUp = gamepadState.ButtonsUp or gameButton.value
@@ -180,6 +190,7 @@ fun HomeButton(
     modifier: Modifier = Modifier,
     size: Dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
     val buttonBit = 0x4000
@@ -191,11 +202,15 @@ fun HomeButton(
     if (isPressed) {
         DisposableEffect(Unit) {
             Log.d(buttonName, "Pressed")
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
             gamepadState.ButtonsDown = gamepadState.ButtonsDown or buttonBit
             onDispose {
                 Log.d(buttonName, "Released")
-                HapticUtils.performButtonReleaseFeedback(view)
+                if (hapticEnabled) {
+                    HapticUtils.performButtonReleaseFeedback(view)
+                }
                 gamepadState.ButtonsDown = gamepadState.ButtonsDown and buttonBit.inv()
                 gamepadState.ButtonsUp = gamepadState.ButtonsUp or buttonBit
             }
@@ -222,6 +237,7 @@ fun CaptureButton(
     modifier: Modifier = Modifier,
     size: Dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
     val buttonBit = 0x8000
@@ -233,11 +249,15 @@ fun CaptureButton(
     if (isPressed) {
         DisposableEffect(Unit) {
             Log.d(buttonName, "Pressed")
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
             gamepadState.ButtonsDown = gamepadState.ButtonsDown or buttonBit
             onDispose {
                 Log.d(buttonName, "Released")
-                HapticUtils.performButtonReleaseFeedback(view)
+                if (hapticEnabled) {
+                    HapticUtils.performButtonReleaseFeedback(view)
+                }
                 gamepadState.ButtonsDown = gamepadState.ButtonsDown and buttonBit.inv()
                 gamepadState.ButtonsUp = gamepadState.ButtonsUp or buttonBit
             }
@@ -300,6 +320,7 @@ fun CentralButtons(
                 .alpha(config.opacity),
             size = (baseDp / 8 * config.scale).dp,
             gamepadState = gamepadState,
+            hapticEnabled = config.hapticEnabled,
         )
     }
 
@@ -315,6 +336,7 @@ fun CentralButtons(
                 .alpha(config.opacity),
             size = (baseDp / 8 * config.scale).dp,
             gamepadState = gamepadState,
+            hapticEnabled = config.hapticEnabled,
         )
     }
 
@@ -330,6 +352,7 @@ fun CentralButtons(
                 .alpha(config.opacity),
             size = (baseDp / 8 * config.scale).dp,
             gamepadState = gamepadState,
+            hapticEnabled = config.hapticEnabled,
         )
     }
 
@@ -345,6 +368,7 @@ fun CentralButtons(
                 .alpha(config.opacity),
             size = (baseDp / 8 * config.scale).dp,
             gamepadState = gamepadState,
+            hapticEnabled = config.hapticEnabled,
         )
     }
 
@@ -380,6 +404,7 @@ fun CentralButtons(
                 .alpha(config.opacity),
             size = (baseDp / 8 * config.scale).dp,
             gamepadState = gamepadState,
+            hapticEnabled = config.hapticEnabled,
         )
     }
 
@@ -394,6 +419,7 @@ fun CentralButtons(
                 .alpha(config.opacity),
             size = (baseDp / 8 * config.scale).dp,
             gamepadState = gamepadState,
+            hapticEnabled = config.hapticEnabled,
         )
     }
 }

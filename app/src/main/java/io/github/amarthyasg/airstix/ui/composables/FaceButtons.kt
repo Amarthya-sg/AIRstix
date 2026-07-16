@@ -54,6 +54,7 @@ fun FaceButton(
     backgroundColour: Color = darken(faceButtonColourMap[type]!!, 0.8f),
     size: Dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
     val gameButton = when (type) {
@@ -75,11 +76,15 @@ fun FaceButton(
     if (isPressed) {
         DisposableEffect(Unit) {
             Log.d("FaceButton ${type.name}", "Pressed")
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
             gamepadState.ButtonsDown = gamepadState.ButtonsDown or gameButton.value
             onDispose {
                 Log.d("FaceButton ${type.name}", "Released")
-                HapticUtils.performButtonReleaseFeedback(view)
+                if (hapticEnabled) {
+                    HapticUtils.performButtonReleaseFeedback(view)
+                }
                 gamepadState.ButtonsDown = gamepadState.ButtonsDown and gameButton.value.inv()
                 gamepadState.ButtonsUp = gamepadState.ButtonsUp or gameButton.value
             }
@@ -113,6 +118,7 @@ fun FaceButtons(
     modifier: Modifier = Modifier,
     size: Dp = 360.dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     Box(
         modifier = modifier.size(size),
@@ -123,24 +129,28 @@ fun FaceButtons(
             modifier = Modifier.align(Alignment.CenterEnd),
             size = 2 * size / 5,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
         FaceButton(
             type = FaceButtonType.B,
             modifier = Modifier.align(Alignment.BottomCenter),
             size = 2 * size / 5,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
         FaceButton(
             type = FaceButtonType.X,
             modifier = Modifier.align(Alignment.TopCenter),
             size = 2 * size / 5,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
         FaceButton(
             type = FaceButtonType.Y,
             modifier = Modifier.align(Alignment.CenterStart),
             size = 2 * size / 5,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
     }
 }

@@ -134,6 +134,7 @@ fun UngroupedDpadButtons(
                         type = slot.type,
                         size = buttonSize.dp,
                         gamepadState = gamepadState,
+                        hapticEnabled = config.hapticEnabled,
                     )
                 }
             }
@@ -153,6 +154,7 @@ fun DpadButton(
     backgroundColour: Color = darken(MaterialTheme.colorScheme.primary, 0.8f),
     size: Dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val view = LocalView.current
     val rotation = when (type) {
@@ -173,11 +175,15 @@ fun DpadButton(
     if (isPressed) {
         DisposableEffect(Unit) {
             Log.d("DPadButton ${type.name}", "Pressed")
-            HapticUtils.performButtonPressFeedback(view)
+            if (hapticEnabled) {
+                HapticUtils.performButtonPressFeedback(view)
+            }
             gamepadState.ButtonsDown = gamepadState.ButtonsDown or gameButton.value
             onDispose {
                 Log.d("DPadButton ${type.name}", "Released")
-                HapticUtils.performButtonReleaseFeedback(view)
+                if (hapticEnabled) {
+                    HapticUtils.performButtonReleaseFeedback(view)
+                }
                 gamepadState.ButtonsDown = gamepadState.ButtonsDown and gameButton.value.inv()
                 gamepadState.ButtonsUp = gamepadState.ButtonsUp or gameButton.value
             }
@@ -213,6 +219,7 @@ fun Dpad(
     modifier: Modifier = Modifier,
     size: Dp = 360.dp,
     gamepadState: GamepadReading,
+    hapticEnabled: Boolean = true,
 ) {
     val buttonSize = 2 * size / 5
     Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
@@ -221,24 +228,28 @@ fun Dpad(
             modifier = Modifier.align(Alignment.TopCenter),
             size = buttonSize,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
         DpadButton(
             type = DpadButtonType.DOWN,
             modifier = Modifier.align(Alignment.BottomCenter),
             size = buttonSize,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
         DpadButton(
             type = DpadButtonType.LEFT,
             modifier = Modifier.align(Alignment.CenterStart),
             size = buttonSize,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
         DpadButton(
             type = DpadButtonType.RIGHT,
             modifier = Modifier.align(Alignment.CenterEnd),
             size = buttonSize,
             gamepadState = gamepadState,
+            hapticEnabled = hapticEnabled,
         )
     }
 }

@@ -93,7 +93,8 @@ data class ButtonConfig(
     val opacity: Float = 1.0f,
     val offsetX: Float = 0f,
     val offsetY: Float = 0f,
-    val anchor: ButtonAnchor = component.defaultAnchor
+    val anchor: ButtonAnchor = component.defaultAnchor,
+    val hapticEnabled: Boolean = true
 ) : Parcelable {
     companion object {
         fun default(component: ButtonComponent) = ButtonConfig(component)
