@@ -1,84 +1,70 @@
 package io.github.amarthyasg.airstix.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.app.Activity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import io.github.amarthyasg.airstix.data.BaseColor
-import io.github.amarthyasg.airstix.data.ColorScheme
-import io.github.amarthyasg.airstix.data.getColorFromBaseColor
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import io.github.amarthyasg.airstix.data.MinimalistPalette
 import androidx.compose.material3.ColorScheme as MaterialColorScheme
 
 /**
- * Creates a dark mode color palette for the given base color.
+ * Creates a custom minimalist color palette mapping PRD roles directly to MaterialColorScheme roles.
  */
-private fun createDarkColorPalette(baseColor: BaseColor): MaterialColorScheme {
-    val darkColorPrimary = getColorFromBaseColor(baseColor, true)
-    val onDarkColorPrimary = contrasting(darkColorPrimary)
-    val darkColorSecondary = darken(shift(darkColorPrimary, -45), 0.1f)
-    val darkColorTertiary = darken(shift(darkColorPrimary, -75), 0.25f)
-
+private fun createMinimalistColorPalette(palette: MinimalistPalette): MaterialColorScheme {
+    val errorColor = Color(0xFFFF5252)
     return darkColorScheme(
-        primary = darkColorPrimary,
-        secondary = darkColorSecondary,
-        tertiary = darkColorTertiary,
-        onPrimary = onDarkColorPrimary,
-        onSecondary = lighten(onDarkColorPrimary, 0.1f),
-        onTertiary = lighten(onDarkColorPrimary, 0.2f),
-        primaryContainer = darken(darkColorPrimary, 0.6f),
-        secondaryContainer = darken(darkColorSecondary, 0.6f),
-        tertiaryContainer = darken(darkColorTertiary, 0.6f),
-        onPrimaryContainer = lighten(darkColorPrimary, 0.6f),
-        onSecondaryContainer = lighten(darkColorSecondary, 0.6f),
-        onTertiaryContainer = lighten(darkColorTertiary, 0.6f),
-        outline = Silver,
-    )
-}
-
-/**
- * Creates a light mode color palette for the given base color.
- */
-private fun createLightColorPalette(baseColor: BaseColor): MaterialColorScheme {
-    val lightColorPrimary = getColorFromBaseColor(baseColor, false)
-    val onLightColorPrimary = contrasting(lightColorPrimary)
-    val lightColorSecondary = lighten(shift(lightColorPrimary, 45), 0.1f)
-    val lightColorTertiary = lighten(shift(lightColorPrimary, 75), 0.25f)
-
-    return lightColorScheme(
-        primary = lightColorPrimary,
-        secondary = lightColorSecondary,
-        tertiary = lightColorTertiary,
-        onPrimary = onLightColorPrimary,
-        onSecondary = darken(onLightColorPrimary, 0.1f),
-        onTertiary = darken(onLightColorPrimary, 0.2f),
-        primaryContainer = lighten(lightColorPrimary, 0.6f),
-        secondaryContainer = lighten(lightColorSecondary, 0.6f),
-        tertiaryContainer = lighten(lightColorTertiary, 0.6f),
-        onPrimaryContainer = darken(lightColorPrimary, 0.6f),
-        onSecondaryContainer = darken(lightColorSecondary, 0.6f),
-        onTertiaryContainer = darken(lightColorTertiary, 0.6f),
-        outline = Gold,
+        primary = palette.accent,
+        onPrimary = contrasting(palette.accent),
+        secondary = palette.muted,
+        onSecondary = palette.text,
+        tertiary = palette.muted,
+        onTertiary = palette.text,
+        background = palette.background,
+        onBackground = palette.text,
+        surface = palette.surface,
+        onSurface = palette.text,
+        onSurfaceVariant = palette.text,
+        outline = palette.muted,
+        outlineVariant = palette.muted,
+        error = errorColor,
+        onError = contrasting(errorColor),
+        primaryContainer = darken(palette.accent, 0.6f),
+        secondaryContainer = darken(palette.muted, 0.6f),
+        onPrimaryContainer = lighten(palette.accent, 0.6f),
+        onSecondaryContainer = lighten(palette.muted, 0.6f)
+    ).copy(
+        surfaceContainer = palette.surface,
+        surfaceContainerLow = palette.surface,
+        surfaceContainerHigh = palette.surface,
+        surfaceContainerHighest = palette.surface,
+        surfaceContainerLowest = palette.surface,
+        surfaceDim = palette.surface,
+        surfaceBright = palette.surface
     )
 }
 
 @Composable
 fun VirtualGamePadMobileTheme(
-    darkMode: ColorScheme,
-    baseColor: BaseColor,
+    minimalistPalette: MinimalistPalette = MinimalistPalette.CRIMSON_ARCADE,
     content: @Composable () -> Unit
 ) {
+    val colorScheme = createMinimalistColorPalette(minimalistPalette)
 
-    val darkTheme: Boolean = when (darkMode) {
-        ColorScheme.LIGHT -> false
-        ColorScheme.DARK -> true
-        ColorScheme.SYSTEM -> isSystemInDarkTheme()
-    }
-
-    val colorScheme = if (darkTheme) {
-        createDarkColorPalette(baseColor)
-    } else {
-        createLightColorPalette(baseColor)
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
+            val insetsController = WindowCompat.getInsetsController(window, view)
+            insetsController.isAppearanceLightStatusBars = false
+            insetsController.isAppearanceLightNavigationBars = false
+        }
     }
 
     MaterialTheme(

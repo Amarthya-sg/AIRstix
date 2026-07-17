@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.AbsoluteCutCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,11 +91,19 @@ fun Trigger(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        val containerColor = MaterialTheme.colorScheme.surface
+        val contentColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+        val borderColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+
         Button(
             onClick = {},
             modifier = Modifier.fillMaxSize(),
             shape = triggerShape,
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = containerColor,
+                contentColor = contentColor
+            ),
+            border = BorderStroke(2.dp, borderColor),
             interactionSource = interactionSource,
         ) {
             Text(label)

@@ -11,7 +11,7 @@ const val PreviewHeightDp = 540
 
 @Composable
 fun PreviewBase(content: @Composable () -> Unit) {
-    VirtualGamePadMobileTheme(darkMode = defaultColorScheme, baseColor = defaultBaseColor) {
+    VirtualGamePadMobileTheme(minimalistPalette = defaultMinimalistPalette) {
         Surface(color = MaterialTheme.colorScheme.background) { content() }
     }
 }

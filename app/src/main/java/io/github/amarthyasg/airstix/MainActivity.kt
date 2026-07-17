@@ -7,12 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -29,8 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import io.github.amarthyasg.airstix.data.SettingsRepository
-import io.github.amarthyasg.airstix.data.defaultBaseColor
-import io.github.amarthyasg.airstix.data.defaultColorScheme
+import io.github.amarthyasg.airstix.data.defaultMinimalistPalette
 import io.github.amarthyasg.airstix.data.defaultFullScreenEnabled
 import io.github.amarthyasg.airstix.data.defaultHapticFeedbackEnabled
 import io.github.amarthyasg.airstix.data.defaultHapticIntensity
@@ -115,11 +116,8 @@ class MainActivity : ComponentActivity() {
         }
 
         VirtualGamePadMobileTheme(
-            darkMode = settingsRepository.colorScheme.collectAsState(
-                initial = defaultColorScheme
-            ).value,
-            baseColor = settingsRepository.baseColor.collectAsState(
-                initial = defaultBaseColor
+            minimalistPalette = settingsRepository.minimalistPalette.collectAsState(
+                initial = defaultMinimalistPalette
             ).value
         ) {
             NavTree(
@@ -135,6 +133,29 @@ class MainActivity : ComponentActivity() {
         settingsRepository: SettingsRepository,
         navController: NavHostController = rememberNavController(),
     ) {
+        val fullScreenEnabled by settingsRepository.fullScreenEnabled.collectAsState(
+            initial = defaultFullScreenEnabled
+        )
+
+        DisposableEffect(navController, fullScreenEnabled) {
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+            val listener = NavController.OnDestinationChangedListener { _, _, _ ->
+                if (fullScreenEnabled) {
+                    WindowCompat.setDecorFitsSystemWindows(window, false)
+                    insetsController.systemBarsBehavior =
+                        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    insetsController.hide(WindowInsetsCompat.Type.systemBars())
+                } else {
+                    WindowCompat.setDecorFitsSystemWindows(window, true)
+                    insetsController.show(WindowInsetsCompat.Type.systemBars())
+                }
+            }
+            navController.addOnDestinationChangedListener(listener)
+            onDispose {
+                navController.removeOnDestinationChangedListener(listener)
+            }
+        }
+
         NavHost(
             navController = navController,
             startDestination = "main_menu",

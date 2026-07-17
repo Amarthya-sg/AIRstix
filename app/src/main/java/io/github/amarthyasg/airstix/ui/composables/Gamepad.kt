@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +68,7 @@ fun DrawGamepad(
 
     // First we make a box that will contain the gamepad
     // And put padding around it so that it doesn't touch the edges of the screen
-    Surface {
+    Surface(color = MaterialTheme.colorScheme.background) {
         Box(
             modifier = Modifier
                 .padding(deadZonePadding.dp)

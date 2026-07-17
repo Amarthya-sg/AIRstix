@@ -1,7 +1,6 @@
 package io.github.amarthyasg.airstix.data
 
-val defaultColorScheme = ColorScheme.SYSTEM
-val defaultBaseColor = BaseColor.BLUE
+val defaultMinimalistPalette = MinimalistPalette.CRIMSON_ARCADE
 const val defaultPollingDelay = 80 // in milliseconds
 const val defaultHapticFeedbackEnabled = false // vibrations
 const val defaultSaveConnectionCredentials = false

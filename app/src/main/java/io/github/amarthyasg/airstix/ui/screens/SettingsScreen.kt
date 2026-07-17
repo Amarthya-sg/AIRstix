@@ -48,21 +48,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.amarthyasg.airstix.R
-import io.github.amarthyasg.airstix.data.BaseColor
-import io.github.amarthyasg.airstix.data.ColorScheme
 import io.github.amarthyasg.airstix.data.PreviewBase
 import io.github.amarthyasg.airstix.data.PreviewHeightDp
 import io.github.amarthyasg.airstix.data.PreviewWidthDp
 import io.github.amarthyasg.airstix.data.SettingsRepository
-import io.github.amarthyasg.airstix.data.defaultBaseColor
-import io.github.amarthyasg.airstix.data.defaultColorScheme
 import io.github.amarthyasg.airstix.data.defaultFullScreenEnabled
 import io.github.amarthyasg.airstix.data.defaultHapticFeedbackEnabled
 import io.github.amarthyasg.airstix.data.defaultHapticIntensity
 import io.github.amarthyasg.airstix.data.HapticIntensity
 import io.github.amarthyasg.airstix.data.defaultPollingDelay
 import io.github.amarthyasg.airstix.data.defaultSaveConnectionCredentials
-import io.github.amarthyasg.airstix.ui.composables.ColorSchemePicker
+import io.github.amarthyasg.airstix.data.MinimalistPalette
+import io.github.amarthyasg.airstix.data.defaultMinimalistPalette
 import io.github.amarthyasg.airstix.ui.composables.ListItemPicker
 import io.github.amarthyasg.airstix.ui.composables.SpinBox
 import kotlinx.coroutines.launch
@@ -93,8 +90,7 @@ private const val logTag = "SettingsScreen"
 
 @Parcelize
 private data class SettingsChanges(
-    val colorScheme: ColorScheme? = null,
-    val baseColor: BaseColor? = null,
+    val minimalistPalette: MinimalistPalette? = null,
     val pollingDelay: Int? = null,
     val hapticFeedbackEnabled: Boolean? = null,
     val hapticIntensity: HapticIntensity? = null,
@@ -112,13 +108,12 @@ fun SettingsScreen(
     var settingsChanges by rememberSaveable { mutableStateOf(SettingsChanges()) }
 
     Scaffold { paddingValues ->
-        val colorScheme by settingsRepository.colorScheme.collectAsState(initial = defaultColorScheme)
-        val baseColor by settingsRepository.baseColor.collectAsState(initial = defaultBaseColor)
         val pollingDelay by settingsRepository.pollingDelay.collectAsState(initial = defaultPollingDelay)
         val hapticEnabled by settingsRepository.hapticFeedbackEnabled.collectAsState(initial = defaultHapticFeedbackEnabled)
         val hapticIntensity by settingsRepository.hapticIntensity.collectAsState(initial = defaultHapticIntensity)
         val saveCredentials by settingsRepository.saveConnectionCredentials.collectAsState(initial = defaultSaveConnectionCredentials)
         val fullScreenEnabled by settingsRepository.fullScreenEnabled.collectAsState(initial = defaultFullScreenEnabled)
+        val minimalistPalette by settingsRepository.minimalistPalette.collectAsState(initial = defaultMinimalistPalette)
 
         Box(modifier = Modifier.fillMaxSize()) {
             // Viewfinder Corner Brackets
@@ -165,16 +160,15 @@ fun SettingsScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-
                         ListItemPicker(
-                            list = BaseColor.entries.asIterable(),
-                            selectedItem = settingsChanges.baseColor ?: baseColor,
+                            list = MinimalistPalette.entries.asIterable(),
+                            selectedItem = settingsChanges.minimalistPalette ?: minimalistPalette,
                             label = stringResource(R.string.settings_theme_color),
                             formattedDisplay = { item ->
                                 Text(text = stringResource(item.nameRes), fontFamily = FontFamily.Monospace)
                             },
                             onItemSelected = {
-                                settingsChanges = settingsChanges.copy(baseColor = it)
+                                settingsChanges = settingsChanges.copy(minimalistPalette = it)
                             }
                         )
 
@@ -465,12 +459,7 @@ fun SettingsScreen(
                             var changesSaved = 0
                             runBlocking {
                                 try {
-                                    settingsChanges.colorScheme?.let {
-                                        settingsRepository.setColorScheme(
-                                            it
-                                        ); ++changesSaved
-                                    }
-                                    settingsChanges.baseColor?.let { settingsRepository.setBaseColor(it); ++changesSaved }
+                                    settingsChanges.minimalistPalette?.let { settingsRepository.setMinimalistPalette(it); ++changesSaved }
                                     settingsChanges.pollingDelay?.let {
                                         settingsRepository.setPollingDelay(
                                             it

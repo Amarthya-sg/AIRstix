@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
@@ -107,11 +109,19 @@ fun ShoulderButton(
         }
     }
 
+    val containerColor = MaterialTheme.colorScheme.surface
+    val contentColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val borderColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+
     Button(
         modifier = modifier
             .heightIn(min = size)
             .widthIn(min = size * 1.5f),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        border = BorderStroke(2.dp, borderColor),
         onClick = { },
         interactionSource = interactionSource,
     ) {
@@ -165,15 +175,23 @@ fun MenuButton(
         }
     }
 
+    val containerColor = MaterialTheme.colorScheme.surface
+    val contentColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val borderColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+
     OutlinedIconButton(
         modifier = modifier.size(size),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+        colors = IconButtonDefaults.outlinedIconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        border = BorderStroke(2.dp, borderColor),
         onClick = { },
         interactionSource = interactionSource,
     ) {
         Text(
             text = glyph,
-            color = MaterialTheme.colorScheme.primary,
+            color = contentColor,
             style = androidx.compose.ui.text.TextStyle(
                 fontSize = androidx.compose.ui.unit.TextUnit(
                     value = size.value * 0.4f,
@@ -217,9 +235,17 @@ fun HomeButton(
         }
     }
 
+    val containerColor = MaterialTheme.colorScheme.surface
+    val contentColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val borderColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+
     OutlinedIconButton(
         modifier = modifier.size(size),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+        colors = IconButtonDefaults.outlinedIconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        border = BorderStroke(2.dp, borderColor),
         onClick = { },
         interactionSource = interactionSource,
     ) {
@@ -227,7 +253,7 @@ fun HomeButton(
             imageVector = Icons.Default.Home,
             contentDescription = stringResource(R.string.content_desc_button, buttonName),
             modifier = Modifier.size(size / 2),
-            tint = MaterialTheme.colorScheme.primary
+            tint = contentColor
         )
     }
 }
@@ -264,9 +290,17 @@ fun CaptureButton(
         }
     }
 
+    val containerColor = MaterialTheme.colorScheme.surface
+    val contentColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val borderColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+
     OutlinedIconButton(
         modifier = modifier.size(size),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+        colors = IconButtonDefaults.outlinedIconButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        border = BorderStroke(2.dp, borderColor),
         onClick = { },
         interactionSource = interactionSource,
     ) {
@@ -274,7 +308,7 @@ fun CaptureButton(
             imageVector = Icons.Default.RadioButtonUnchecked,
             contentDescription = stringResource(R.string.content_desc_button, "Capture (○)"),
             modifier = Modifier.size(size / 2),
-            tint = MaterialTheme.colorScheme.primary
+            tint = contentColor
         )
     }
 }

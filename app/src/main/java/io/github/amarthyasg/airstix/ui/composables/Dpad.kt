@@ -40,8 +40,8 @@ import io.github.amarthyasg.airstix.data.ButtonConfig
 /** Fraction of layout height used by the grouped D-pad container. */
 const val DpadGroupSizeRatio = 0.45f
 
-/** Fraction of layout height used by each D-pad button (2/5 of group size). */
-const val DpadButtonSizeRatio = 0.18f
+/** Fraction of layout height used by each D-pad button (slightly smaller to prevent overlap). */
+const val DpadButtonSizeRatio = 0.14f
 
 private data class DpadButtonSlot(
     val type: DpadButtonType,
@@ -150,8 +150,8 @@ enum class DpadButtonType {
 fun DpadButton(
     type: DpadButtonType,
     modifier: Modifier = Modifier,
-    foregroundColour: Color = MaterialTheme.colorScheme.primary,
-    backgroundColour: Color = darken(MaterialTheme.colorScheme.primary, 0.8f),
+    foregroundColour: Color = Color.Unspecified,
+    backgroundColour: Color = Color.Unspecified,
     size: Dp,
     gamepadState: GamepadReading,
     hapticEnabled: Boolean = true,
@@ -171,6 +171,21 @@ fun DpadButton(
     }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+
+    val resolvedBackground = if (backgroundColour != Color.Unspecified) {
+        backgroundColour
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+
+    val resolvedForeground = if (foregroundColour != Color.Unspecified) {
+        foregroundColour
+    } else {
+        if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    }
+
+    val resolvedBorderColor = if (isPressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+
     // See https://stackoverflow.com/a/69157877/8659747
     if (isPressed) {
         DisposableEffect(Unit) {
@@ -195,9 +210,9 @@ fun DpadButton(
             .padding(0.dp),
         onClick = {},
         colors = IconButtonDefaults.outlinedIconButtonColors(
-            containerColor = backgroundColour,
+            containerColor = resolvedBackground,
         ),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+        border = BorderStroke(2.dp, resolvedBorderColor),
         interactionSource = interactionSource,
     ) {
         Icon(
@@ -206,7 +221,7 @@ fun DpadButton(
             modifier = Modifier
                 .rotate(rotation)
                 .size(size),
-            tint = foregroundColour
+            tint = resolvedForeground
         )
     }
 }
@@ -221,7 +236,7 @@ fun Dpad(
     gamepadState: GamepadReading,
     hapticEnabled: Boolean = true,
 ) {
-    val buttonSize = 2 * size / 5
+    val buttonSize = size * 0.31f
     Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
         DpadButton(
             type = DpadButtonType.UP,

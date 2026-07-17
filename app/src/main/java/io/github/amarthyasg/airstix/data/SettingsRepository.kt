@@ -53,11 +53,9 @@ class SettingsRepository(context: Context) {
         }
     }
 
-    val baseColor: Flow<BaseColor> = dataStore.data.map { preferences ->
-        BaseColor.fromInt(preferences[BASE_COLOR] ?: defaultBaseColor.ordinal)
+    val minimalistPalette: Flow<MinimalistPalette> = dataStore.data.map { preferences ->
+        MinimalistPalette.fromInt(preferences[MINIMALIST_PALETTE] ?: defaultMinimalistPalette.ordinal)
     }
-
-    val colorScheme: Flow<ColorScheme> = flowOf(ColorScheme.DARK)
 
     val pollingDelay: Flow<Int> = dataStore.data.map { preferences ->
         preferences[POLLING_DELAY] ?: defaultPollingDelay
@@ -97,15 +95,9 @@ class SettingsRepository(context: Context) {
         preferences[DPAD_GROUPED] ?: true
     }
 
-    suspend fun setBaseColor(baseColor: BaseColor) {
+    suspend fun setMinimalistPalette(palette: MinimalistPalette) {
         dataStore.edit { preferences ->
-            preferences[BASE_COLOR] = baseColor.ordinal
-        }
-    }
-
-    suspend fun setColorScheme(colorScheme: ColorScheme) {
-        dataStore.edit { preferences ->
-            preferences[COLOR_SCHEME] = colorScheme.ordinal
+            preferences[MINIMALIST_PALETTE] = palette.ordinal
         }
     }
 
@@ -192,8 +184,7 @@ class SettingsRepository(context: Context) {
     }
 
     companion object {
-        private val COLOR_SCHEME = intPreferencesKey("color_scheme")
-        private val BASE_COLOR = intPreferencesKey("base_color")
+        private val MINIMALIST_PALETTE = intPreferencesKey("minimalist_palette")
         private val POLLING_DELAY = intPreferencesKey("polling_delay")
         private val HAPTIC_FEEDBACK_ENABLED = booleanPreferencesKey("haptic_feedback_enabled")
         private val HAPTIC_INTENSITY = intPreferencesKey("haptic_intensity")

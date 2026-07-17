@@ -164,6 +164,8 @@ fun GamePad(
 
         val lastSentState = GamepadReading()
         var lastSentTime = 0L
+        var latchedButtons = 0
+        var pendingReleaseLatch = 0
 
         while (connectionViewModel != null && !isStopping.value) {
             val currentButtonsDown = gamepadState.ButtonsDown
@@ -175,8 +177,20 @@ fun GamePad(
             val currentLeftTrigger = gamepadState.LeftTrigger
             val currentRightTrigger = gamepadState.RightTrigger
 
-            val isChanged = currentButtonsDown != lastSentState.ButtonsDown ||
-                    currentButtonsUp != lastSentState.ButtonsUp ||
+            // State Latching Logic:
+            // Identify quick taps: buttons that were released in this tick but were not pressed in the last sent frame,
+            // and are not physically held down right now.
+            val newQuickTaps = currentButtonsUp and lastSentState.ButtonsDown.inv() and currentButtonsDown.inv()
+
+            latchedButtons = latchedButtons or newQuickTaps
+            pendingReleaseLatch = pendingReleaseLatch or newQuickTaps
+
+            // Calculate the button states to send
+            val sentButtonsDown = currentButtonsDown or latchedButtons
+            val sentButtonsUp = (currentButtonsUp or pendingReleaseLatch) and latchedButtons.inv()
+
+            val isChanged = sentButtonsDown != lastSentState.ButtonsDown ||
+                    sentButtonsUp != lastSentState.ButtonsUp ||
                     currentLeftThumbstickX != lastSentState.LeftThumbstickX ||
                     currentLeftThumbstickY != lastSentState.LeftThumbstickY ||
                     currentRightThumbstickX != lastSentState.RightThumbstickX ||
@@ -186,10 +200,21 @@ fun GamePad(
 
             val currentTime = System.currentTimeMillis()
             if (isChanged || (currentTime - lastSentTime >= 500L)) {
-                connectionViewModel.enqueueGamepadState(gamepadState)
+                // Construct a temporary GamepadReading to enqueue containing our latched state
+                val packetState = GamepadReading().apply {
+                    ButtonsDown = sentButtonsDown
+                    ButtonsUp = sentButtonsUp
+                    LeftThumbstickX = currentLeftThumbstickX
+                    LeftThumbstickY = currentLeftThumbstickY
+                    RightThumbstickX = currentRightThumbstickX
+                    RightThumbstickY = currentRightThumbstickY
+                    LeftTrigger = currentLeftTrigger
+                    RightTrigger = currentRightTrigger
+                }
+                connectionViewModel.enqueueGamepadState(packetState)
 
-                lastSentState.ButtonsDown = currentButtonsDown
-                lastSentState.ButtonsUp = currentButtonsUp
+                lastSentState.ButtonsDown = sentButtonsDown
+                lastSentState.ButtonsUp = sentButtonsUp
                 lastSentState.LeftThumbstickX = currentLeftThumbstickX
                 lastSentState.LeftThumbstickY = currentLeftThumbstickY
                 lastSentState.RightThumbstickX = currentRightThumbstickX
@@ -198,6 +223,12 @@ fun GamePad(
                 lastSentState.RightTrigger = currentRightTrigger
 
                 lastSentTime = currentTime
+
+                // Clear latched presses as they have been sent.
+                // Keep pending releases in the release latch to be sent on the next tick,
+                // but clear those that were successfully transmitted in sentButtonsUp.
+                latchedButtons = 0
+                pendingReleaseLatch = pendingReleaseLatch and sentButtonsUp.inv()
             }
 
             gamepadState.ButtonsUp = 0

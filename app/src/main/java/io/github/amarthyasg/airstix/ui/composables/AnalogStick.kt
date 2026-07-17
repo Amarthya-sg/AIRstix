@@ -139,11 +139,11 @@ private fun toggleThumbstickButton(
 @Composable
 fun AnalogStick(
     modifier: Modifier = Modifier,
-    ringColor: Color = MaterialTheme.colorScheme.outline,
+    ringColor: Color = MaterialTheme.colorScheme.primary,
     ringWidth: Dp = 4.dp,
-    outerCircleColor: Color = darken(MaterialTheme.colorScheme.primary, 0.8f),
+    outerCircleColor: Color = MaterialTheme.colorScheme.surface,
     outerCircleWidth: Dp = 4.dp,
-    innerCircleColor: Color = lighten(MaterialTheme.colorScheme.primary, 0.2f),
+    innerCircleColor: Color = MaterialTheme.colorScheme.primary,
     innerCircleRadius: Dp = 32.dp,
     gamepadState: GamepadReading,
     type: AnalogStickType,

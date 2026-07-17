@@ -22,21 +22,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.amarthyasg.airstix.R
-import io.github.amarthyasg.airstix.data.BaseColor
-import io.github.amarthyasg.airstix.data.ColorScheme
+import io.github.amarthyasg.airstix.data.MinimalistPalette
 
 @Composable
 private fun VirtualGamePadMobileThemePreview(
-    darkMode: ColorScheme = ColorScheme.SYSTEM,
-    baseColor: BaseColor = BaseColor.BLUE
+    palette: MinimalistPalette = MinimalistPalette.CRIMSON_ARCADE
 ) {
     VirtualGamePadMobileTheme(
-        darkMode = darkMode,
-        baseColor = baseColor
+        minimalistPalette = palette
     ) {
         Column(
             modifier = Modifier
@@ -56,7 +53,7 @@ private fun VirtualGamePadMobileThemePreview(
             ColorSection(
                 title = stringResource(R.string.theme_preview_primary),
                 colors = listOf(
-                    ColorInfo("Primary", MaterialTheme.colorScheme.primary),
+                    ColorInfo("Primary (Accent)", MaterialTheme.colorScheme.primary),
                     ColorInfo("On Primary", MaterialTheme.colorScheme.onPrimary),
                     ColorInfo("Primary Container", MaterialTheme.colorScheme.primaryContainer),
                     ColorInfo("On Primary Container", MaterialTheme.colorScheme.onPrimaryContainer)
@@ -67,27 +64,21 @@ private fun VirtualGamePadMobileThemePreview(
             ColorSection(
                 title = stringResource(R.string.theme_preview_secondary),
                 colors = listOf(
-                    ColorInfo("Secondary", MaterialTheme.colorScheme.secondary),
+                    ColorInfo("Secondary (Muted)", MaterialTheme.colorScheme.secondary),
                     ColorInfo("On Secondary", MaterialTheme.colorScheme.onSecondary),
                     ColorInfo("Secondary Container", MaterialTheme.colorScheme.secondaryContainer),
-                    ColorInfo(
-                        "On Secondary Container",
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                    )
+                    ColorInfo("On Secondary Container", MaterialTheme.colorScheme.onSecondaryContainer)
                 )
             )
 
-            // Tertiary Colors Section
+            // Background & Surface Colors Section
             ColorSection(
-                title = stringResource(R.string.theme_preview_tertiary),
+                title = stringResource(R.string.theme_preview_background),
                 colors = listOf(
-                    ColorInfo("Tertiary", MaterialTheme.colorScheme.tertiary),
-                    ColorInfo("On Tertiary", MaterialTheme.colorScheme.onTertiary),
-                    ColorInfo("Tertiary Container", MaterialTheme.colorScheme.tertiaryContainer),
-                    ColorInfo(
-                        "On Tertiary Container",
-                        MaterialTheme.colorScheme.onTertiaryContainer
-                    )
+                    ColorInfo("Background", MaterialTheme.colorScheme.background),
+                    ColorInfo("On Background (Text)", MaterialTheme.colorScheme.onBackground),
+                    ColorInfo("Surface", MaterialTheme.colorScheme.surface),
+                    ColorInfo("On Surface (Text)", MaterialTheme.colorScheme.onSurface)
                 )
             )
 
@@ -95,43 +86,9 @@ private fun VirtualGamePadMobileThemePreview(
             ColorSection(
                 title = stringResource(R.string.theme_preview_other),
                 colors = listOf(
-                    ColorInfo("Outline", MaterialTheme.colorScheme.outline),
+                    ColorInfo("Outline (Muted)", MaterialTheme.colorScheme.outline),
                     ColorInfo("Outline Variant", MaterialTheme.colorScheme.outlineVariant),
-                    ColorInfo("Scrim", MaterialTheme.colorScheme.scrim),
-                    ColorInfo("Inverse Surface", MaterialTheme.colorScheme.inverseSurface),
-                    ColorInfo("Inverse On Surface", MaterialTheme.colorScheme.inverseOnSurface),
-                    ColorInfo("Inverse Primary", MaterialTheme.colorScheme.inversePrimary)
-                )
-            )
-
-            // Surface Colors Section
-            ColorSection(
-                title = stringResource(R.string.theme_preview_surface),
-                colors = listOf(
-                    ColorInfo("Surface", MaterialTheme.colorScheme.surface),
-                    ColorInfo("On Surface", MaterialTheme.colorScheme.onSurface),
-                    ColorInfo("Surface Variant", MaterialTheme.colorScheme.surfaceVariant),
-                    ColorInfo("On Surface Variant", MaterialTheme.colorScheme.onSurfaceVariant)
-                )
-            )
-
-            // Background Colors Section
-            ColorSection(
-                title = stringResource(R.string.theme_preview_background),
-                colors = listOf(
-                    ColorInfo("Background", MaterialTheme.colorScheme.background),
-                    ColorInfo("On Background", MaterialTheme.colorScheme.onBackground)
-                )
-            )
-
-            // Error Colors Section
-            ColorSection(
-                title = stringResource(R.string.theme_preview_error),
-                colors = listOf(
-                    ColorInfo("Error", MaterialTheme.colorScheme.error),
-                    ColorInfo("On Error", MaterialTheme.colorScheme.onError),
-                    ColorInfo("Error Container", MaterialTheme.colorScheme.errorContainer),
-                    ColorInfo("On Error Container", MaterialTheme.colorScheme.onErrorContainer)
+                    ColorInfo("Scrim", MaterialTheme.colorScheme.scrim)
                 )
             )
         }
@@ -143,44 +100,33 @@ private fun ColorSection(
     title: String,
     colors: List<ColorInfo>
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.Start
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold
-            )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.SemiBold
+        )
 
-            colors.chunked(4).forEach { rowColors ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    rowColors.forEach { colorInfo ->
-                        ColorSwatch(
-                            colorInfo = colorInfo,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    // Fill remaining space if odd number of colors
-                    if (rowColors.size == 1) {
-                        Box(modifier = Modifier.weight(1f))
-                    }
-                }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            colors.forEach { colorInfo ->
+                ColorCard(
+                    colorInfo = colorInfo,
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ColorSwatch(
+private fun ColorCard(
     colorInfo: ColorInfo,
     modifier: Modifier = Modifier
 ) {
@@ -189,13 +135,15 @@ private fun ColorSwatch(
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(
-            modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(40.dp)
                     .background(
                         color = colorInfo.color,
                         shape = RoundedCornerShape(6.dp)
@@ -225,19 +173,61 @@ private data class ColorInfo(
 )
 
 @Composable
-@PreviewLightDark()
-private fun ThemeBlue() {
-    VirtualGamePadMobileThemePreview(baseColor = BaseColor.BLUE)
+@Preview(showBackground = true)
+private fun PreviewCrimsonArcade() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.CRIMSON_ARCADE)
 }
 
 @Composable
-@PreviewLightDark()
-private fun ThemeRed() {
-    VirtualGamePadMobileThemePreview(baseColor = BaseColor.RED)
+@Preview(showBackground = true)
+private fun PreviewMoltenAmber() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.MOLTEN_AMBER)
 }
 
 @Composable
-@PreviewLightDark()
-private fun ThemeGreen() {
-    VirtualGamePadMobileThemePreview(baseColor = BaseColor.GREEN)
+@Preview(showBackground = true)
+private fun PreviewGoldenCircuit() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.GOLDEN_CIRCUIT)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewTerminalPhosphor() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.TERMINAL_PHOSPHOR)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewGlacierCyan() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.GLACIER_CYAN)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewSlateBlue() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.SLATE_BLUE)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewDeepViolet() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.DEEP_VIOLET)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewNeonOrchid() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.NEON_ORCHID)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewBubblegumPulse() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.BUBBLEGUM_PULSE)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewMonoSteel() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.MONO_STEEL)
 }
