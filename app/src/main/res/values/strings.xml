@@ -183,6 +183,11 @@
     <string name="palette_neon_orchid">Neon Orchid</string>
     <string name="palette_bubblegum_pulse">Bubblegum Pulse</string>
     <string name="palette_mono_steel">Mono Steel</string>
+    <string name="palette_paper_arcade">Paper Arcade</string>
+    <string name="palette_frost_console">Frost Console</string>
+    <string name="palette_mint_cartridge">Mint Cartridge</string>
+    <string name="palette_ivory_blaze">Ivory Blaze</string>
+    <string name="palette_lilac_circuit">Lilac Circuit</string>
 
     <!-- Theme Preview -->
     <string name="theme_preview_title">Theme Color Palette</string>

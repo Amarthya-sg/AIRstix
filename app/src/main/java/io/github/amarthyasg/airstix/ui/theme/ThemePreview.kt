@@ -231,3 +231,33 @@ private fun PreviewBubblegumPulse() {
 private fun PreviewMonoSteel() {
     VirtualGamePadMobileThemePreview(MinimalistPalette.MONO_STEEL)
 }
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewPaperTarget() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.PAPER_ARCADE)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewFrostConsole() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.FROST_CONSOLE)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewMintCartridge() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.MINT_CARTRIDGE)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewIvoryBlaze() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.IVORY_BLAZE)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewLilacCircuit() {
+    VirtualGamePadMobileThemePreview(MinimalistPalette.LILAC_CIRCUIT)
+}

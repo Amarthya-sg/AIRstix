@@ -16,7 +16,7 @@ import androidx.compose.material3.ColorScheme as MaterialColorScheme
  * Creates a custom minimalist color palette mapping PRD roles directly to MaterialColorScheme roles.
  */
 private fun createMinimalistColorPalette(palette: MinimalistPalette): MaterialColorScheme {
-    val errorColor = Color(0xFFFF5252)
+    val errorColor = if (palette.isLight) Color(0xFFB3261E) else Color(0xFFFF5252)
     return darkColorScheme(
         primary = palette.accent,
         onPrimary = contrasting(palette.accent),
@@ -57,13 +57,14 @@ fun VirtualGamePadMobileTheme(
 
     val view = LocalView.current
     if (!view.isInEditMode) {
+        val isLight = minimalistPalette.isLight
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
             window.navigationBarColor = colorScheme.background.toArgb()
             val insetsController = WindowCompat.getInsetsController(window, view)
-            insetsController.isAppearanceLightStatusBars = false
-            insetsController.isAppearanceLightNavigationBars = false
+            insetsController.isAppearanceLightStatusBars = isLight
+            insetsController.isAppearanceLightNavigationBars = isLight
         }
     }
 

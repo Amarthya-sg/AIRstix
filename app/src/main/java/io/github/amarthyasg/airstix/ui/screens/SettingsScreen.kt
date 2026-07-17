@@ -83,6 +83,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.size
 import io.github.amarthyasg.airstix.ui.utils.HapticUtils
 import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.border
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import io.github.amarthyasg.airstix.ui.theme.contrasting
 import androidx.compose.foundation.background
 import androidx.compose.material3.Surface
 
@@ -149,7 +161,7 @@ fun SettingsScreen(
                     // Left Column: DISPLAY
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
@@ -158,20 +170,76 @@ fun SettingsScreen(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                            modifier = Modifier.padding(bottom = 4.dp)
+                            modifier = Modifier.padding(bottom = 2.dp)
                         )
-                        ListItemPicker(
-                            list = MinimalistPalette.entries.asIterable(),
-                            selectedItem = settingsChanges.minimalistPalette ?: minimalistPalette,
-                            label = stringResource(R.string.settings_theme_color),
-                            formattedDisplay = { item ->
-                                Text(text = stringResource(item.nameRes), fontFamily = FontFamily.Monospace)
-                            },
-                            onItemSelected = {
-                                settingsChanges = settingsChanges.copy(minimalistPalette = it)
+                        val stagedPalette = settingsChanges.minimalistPalette ?: minimalistPalette
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.settings_theme_color),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "·",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontFamily = FontFamily.Monospace,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            )
+                            Text(
+                                text = stringResource(stagedPalette.nameRes),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                color = stagedPalette.accent
+                            )
+                        }
+
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        ) {
+                            val chunked = MinimalistPalette.entries.chunked(5)
+                            chunked.forEach { rowItems ->
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    rowItems.forEach { item ->
+                                        PaletteCircle(
+                                            palette = item,
+                                            isSelected = stagedPalette == item,
+                                            onClick = {
+                                                settingsChanges = settingsChanges.copy(minimalistPalette = item)
+                                            }
+                                        )
+                                    }
+                                }
                             }
+                        }
+
+                    }
+
+                    // Right Column: BEHAVIOR
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "02 · BEHAVIOR",
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                            modifier = Modifier.padding(bottom = 2.dp)
                         )
 
+                        // 1. Polling Rate Interval
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalAlignment = Alignment.Start
@@ -225,7 +293,6 @@ fun SettingsScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start
                             ) {
-                                // Decrement Button (-)
                                 // Decrement Button (-)
                                 IconButton(
                                     onClick = {
@@ -310,24 +377,8 @@ fun SettingsScreen(
                                 }
                             }
                         }
-                    }
 
-                    // Right Column: BEHAVIOR
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(
-                            text = "02 · BEHAVIOR",
-                            fontFamily = FontFamily.Monospace,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-
-                        // 1. Remember IP Address and Port
+                        // 2. Remember IP Address and Port
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -544,5 +595,91 @@ fun SettingsScreenPreview() {
             onNavigateToGamepadCustomization = {},
             settingsRepository = SettingsRepository(LocalContext.current)
         )
+    }
+}
+
+@Composable
+private fun PaletteCircle(
+    palette: MinimalistPalette,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = listOf(
+        palette.background,
+        palette.surface,
+        palette.muted,
+        palette.text,
+        palette.accent
+    )
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        // Selection Ring
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+            )
+        }
+
+        // Concentric sectors Canvas
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(if (isSelected) 4.dp else 0.dp)
+        ) {
+            val sizePx = size.minDimension
+            val radius = sizePx / 2
+
+            // Draw a neutral gray translucent background chip (20% opacity)
+            drawCircle(
+                color = Color(0x33808080),
+                radius = radius,
+                center = center
+            )
+
+            val strokeWidth = sizePx * 0.35f
+            val arcRadius = radius - strokeWidth / 2
+
+            for (i in 0 until 5) {
+                val startAngle = i * 72f - 90f // Start from the top (12 o'clock)
+                drawArc(
+                    color = colors[i],
+                    startAngle = startAngle,
+                    sweepAngle = 72f,
+                    useCenter = false,
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Butt),
+                    topLeft = Offset(radius - arcRadius, radius - arcRadius),
+                    size = Size(arcRadius * 2, arcRadius * 2)
+                )
+            }
+        }
+
+        // Selection Checkmark Badge
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .size(14.dp)
+                    .shadow(1.dp, CircleShape)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Selected",
+                    tint = contrasting(palette.accent),
+                    modifier = Modifier.size(10.dp)
+                )
+            }
+        }
     }
 }

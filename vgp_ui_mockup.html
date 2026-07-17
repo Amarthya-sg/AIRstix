@@ -1,0 +1,2712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AIRstix 1000% High-Fidelity Interactive Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Styling variables mimicking Jetpack Compose Material 3 design system */
+    :root {
+      --primary-cyan: #00ffff;
+      --primary-cyan-glow: rgba(0, 255, 255, 0.45);
+      --accent-color: #00ffff;
+      --accent-glow: rgba(0, 255, 255, 0.45);
+      --bg-color: #080d12;
+      --card-bg: rgba(22, 28, 36, 0.85);
+      --border-color: rgba(0, 255, 255, 0.25);
+      --text-primary: #e3f2fd;
+      --text-secondary: #00ffff;
+      --text-muted: #78909c;
+      --shadow-color: rgba(0, 0, 0, 0.7);
+      --glow-intensity: 12px;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-sans: 'Outfit', sans-serif;
+    }
+
+    /* Light mode matching settings theme change */
+    .light-mode {
+      --bg-color: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border-color: rgba(0, 255, 255, 0.4);
+      --text-primary: #0f172a;
+      --text-secondary: #0ea5e9;
+      --text-muted: #64748b;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --glow-intensity: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #02060a;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Option panel outside screen wrapper */
+    .options-panel {
+      width: 100%;
+      max-width: 980px;
+      margin: 15px 0 5px 0;
+      padding: 12px 20px;
+      background: rgba(13, 22, 33, 0.9);
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .options-title {
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: var(--accent-color);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .option-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-label {
+      font-size: 0.8rem;
+      color: #8ab4f8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .color-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .color-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .color-btn.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .theme-toggle-btn, .reset-mock-btn {
+      background: transparent;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      color: var(--accent-color);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-sans);
+    }
+
+    .theme-toggle-btn:hover, .reset-mock-btn:hover {
+      background: var(--accent-color);
+      color: #050b11;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Navigation Debugger list */
+    .screen-debugger {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      background: rgba(10, 20, 30, 0.6);
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+      flex-wrap: wrap;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .debug-screen-btn {
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: #8ab4f8;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .debug-screen-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    .debug-screen-btn.active {
+      background: var(--accent-color);
+      color: #050b11;
+      font-weight: 800;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* Device Bezel frame wrapper */
+    .device-container {
+      position: relative;
+      width: 920px;
+      height: 440px;
+      background: #181d24;
+      border: 14px solid #2d3540;
+      border-radius: 42px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), inset 0 0 12px rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      margin-bottom: 20px;
+      z-index: 2;
+    }
+
+    .device-speaker {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 50px;
+      background: #4b5563;
+      border-radius: 2px;
+      z-index: 100;
+    }
+
+    .device-camera {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: #111827;
+      border: 2.5px solid #374151;
+      border-radius: 50%;
+      z-index: 100;
+    }
+
+    /* Phone Screen container */
+    .device-screen {
+      position: relative;
+      width: 864px;
+      height: 384px;
+      background-color: var(--bg-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Dotted HUD graph canvas */
+    .device-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(var(--border-color) 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.8;
+    }
+
+    /* Screen pages with animations */
+    .screen-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      z-index: 1;
+      padding: 14px 20px;
+    }
+
+    .screen-page.active {
+      display: flex;
+    }
+
+    /* Sliding Transitions */
+    .slide-up-enter {
+      animation: slideUp 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .slide-down-exit {
+      animation: slideDown 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .slide-left-enter {
+      animation: slideLeft 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .slide-right-exit {
+      animation: slideRight 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(100%); opacity: 0; }
+    }
+    @keyframes slideLeft {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    @keyframes slideRight {
+      from { transform: translateX(0); }
+      to { transform: translateX(100%); }
+    }
+
+    /* Brackets corners style */
+    .hud-bracket {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid var(--accent-color);
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.65;
+    }
+    .hud-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+    .hud-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+    .hud-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+    .hud-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+    /* Button Styles matching Jetpack Compose */
+    .btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+
+    .btn:hover {
+      background: rgba(0, 255, 255, 0.08);
+      border-color: var(--accent-color);
+      transform: translateY(-1.5px);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .btn:active {
+      transform: translateY(0.5px);
+    }
+
+    .btn-cyan {
+      background: var(--accent-color);
+      color: #050b11;
+      border: none;
+      font-weight: 800;
+    }
+
+    .btn-cyan:hover {
+      background: #ffffff;
+      color: #050b11;
+      transform: translateY(-1.5px);
+      box-shadow: 0 0 12px rgba(255,255,255,0.5);
+    }
+
+    .btn-red {
+      border-color: rgba(255, 23, 68, 0.35);
+      color: #ff1744;
+    }
+
+    .btn-red:hover {
+      background: rgba(255, 23, 68, 0.08);
+      border-color: #ff1744;
+      box-shadow: 0 0 8px rgba(255, 23, 68, 0.25);
+    }
+
+    /* Modal dialog overlays */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-box {
+      width: 390px;
+      background: #22252a; /* Exact Material dark color */
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #ffffff;
+    }
+
+    /* Profile List items matching screenshot */
+    .profile-list {
+      max-height: 170px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 2px;
+    }
+
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .profile-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      bottom: 10px;
+      width: 3px;
+      background: transparent;
+      border-radius: 2px;
+    }
+
+    .profile-item.active::before {
+      background: var(--accent-color);
+    }
+
+    .profile-item.active {
+      border-color: rgba(0, 255, 255, 0.3);
+      background: rgba(0, 255, 255, 0.03);
+    }
+
+    .profile-name-text {
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+    }
+
+    .profile-delete-btn {
+      background: transparent;
+      border: none;
+      color: #ff8a80;
+      cursor: pointer;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .profile-delete-btn:hover {
+      opacity: 1;
+    }
+
+    /* Inputs */
+    .input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1.5px solid var(--border-color);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.25s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 6px var(--accent-glow);
+    }
+
+    /* 1. Main Menu Layout */
+    .menu-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 10px;
+      z-index: 2;
+    }
+
+    .menu-main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .app-title-glow {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 5px;
+      color: #ffffff;
+      margin-bottom: 22px;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .menu-btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 290px;
+    }
+
+    .menu-btn-stack .btn {
+      width: 100%;
+      height: 38px;
+    }
+
+    /* 2. Connect Screen Form */
+    .connect-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 16px;
+      height: 100%;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .connect-form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-row-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .connect-history-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-left: 1.5px solid var(--border-color);
+      padding-left: 16px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .history-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-card:hover {
+      background: rgba(0, 255, 255, 0.04);
+      border-color: var(--accent-color);
+    }
+
+    /* Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+
+    .switch-widget {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+    }
+
+    .switch-widget input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-track {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.12);
+      transition: .25s;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .slider-track:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 2px;
+      bottom: 2px;
+      background-color: #e0f7fc;
+      transition: .25s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider-track {
+      background-color: var(--accent-color);
+    }
+
+    input:checked + .slider-track:before {
+      transform: translateX(18px);
+      background-color: #050b11;
+    }
+
+    /* 3. Connecting Sonar */
+    .connecting-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 22px;
+      z-index: 2;
+    }
+
+    .sonar-box {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sonar-ring {
+      position: absolute;
+      border: 1.5px solid var(--accent-color);
+      border-radius: 50%;
+      animation: sonarPulse 2s infinite linear;
+      opacity: 0;
+    }
+
+    .sonar-ring:nth-child(1) { animation-delay: 0s; }
+    .sonar-ring:nth-child(2) { animation-delay: 0.66s; }
+    .sonar-ring:nth-child(3) { animation-delay: 1.33s; }
+
+    .sonar-center {
+      width: 18px;
+      height: 18px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--accent-color);
+      z-index: 2;
+    }
+
+    @keyframes sonarPulse {
+      0% { width: 18px; height: 18px; opacity: 0.8; }
+      100% { width: 130px; height: 130px; opacity: 0; }
+    }
+
+    /* 4. Gamepad & Customizer buttons matching screenshot 1000% */
+    .gamepad-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+
+    /* Outer Joystick track */
+    .stick-outer {
+      position: absolute;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      border-radius: 50%;
+      background: rgba(5, 27, 36, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    }
+
+    /* Inner Joystick knob */
+    .stick-inner {
+      width: 46px;
+      height: 46px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6), 0 0 10px var(--accent-glow);
+      cursor: grab;
+      position: absolute;
+      z-index: 5;
+    }
+
+    .stick-inner:active {
+      cursor: grabbing;
+    }
+
+    /* Capsule shape for LSHLDR/RSHLDR */
+    .shoulder-capsule {
+      position: absolute;
+      background: var(--accent-color);
+      border: none;
+      border-radius: 20px;
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 1px;
+      z-index: 4;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4), 0 0 8px var(--accent-glow);
+    }
+
+    /* Sliced Polygon shape for LT/RT Triggers */
+    .trigger-custom {
+      position: absolute;
+      background: var(--accent-color);
+      color: #000000;
+      font-weight: 800;
+      font-size: 0.8rem;
+      font-family: var(--font-sans);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4), 0 0 8px var(--accent-glow);
+      line-height: 1.1;
+    }
+
+    .trigger-custom-left {
+      clip-path: polygon(0 0, 60% 0, 100% 40%, 100% 100%, 0 100%);
+    }
+
+    .trigger-custom-right {
+      clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 100%, 0 40%);
+    }
+
+    /* Face button group circles */
+    .face-diamond-bg {
+      position: absolute;
+      width: 108px;
+      height: 108px;
+      background: transparent;
+      z-index: 4;
+    }
+
+    /* Face button circles with exact colors */
+    .face-btn-individual {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      transition: transform 0.1s;
+    }
+
+    /* Color scheme: X (Top Blue), B (Bottom Red), Y (Left Yellow), A (Right Green) */
+    .face-btn-x { background: #0a1c36; color: #448aff; }
+    .face-btn-b { background: #2f0a0d; color: #ff5252; }
+    .face-btn-y { background: #27250c; color: #ffd740; }
+    .face-btn-a { background: #08280f; color: #69f0ae; }
+
+    .face-btn-individual:active {
+      transform: scale(0.9);
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* D-pad direction arrow circular buttons */
+    .dpad-cross-bg {
+      position: absolute;
+      width: 108px;
+      height: 108px;
+      background: transparent;
+      z-index: 4;
+    }
+
+    .dpad-btn-individual {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0f1724;
+      border: 2px solid rgba(255,255,255,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .dpad-arrow-cyan {
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+
+    .dpad-arrow-up    { border-width: 0 7px 11px 7px; border-color: transparent transparent var(--accent-color) transparent; }
+    .dpad-arrow-down  { border-width: 11px 7px 0 7px; border-color: var(--accent-color) transparent transparent transparent; }
+    .dpad-arrow-left  { border-width: 7px 11px 7px 0; border-color: transparent var(--accent-color) transparent transparent; }
+    .dpad-arrow-right { border-width: 7px 0 7px 11px; border-color: transparent transparent transparent var(--accent-color); }
+
+    .dpad-btn-individual:active {
+      background: rgba(0, 255, 255, 0.15);
+    }
+
+    /* Central Buttons: SELECT (-), CAPTURE (○), START (+), HOME (House) */
+    .central-btn-circle {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #0f1724;
+      border: 2px solid rgba(255,255,255,0.45);
+      color: #8ab4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      z-index: 4;
+    }
+    
+    .central-btn-circle:active {
+      background: rgba(0, 255, 255, 0.15);
+    }
+
+    /* Small Cyan Gear Icon directly below gap */
+    .settings-gear-btn {
+      position: absolute;
+      background: transparent;
+      border: none;
+      color: var(--accent-color);
+      font-size: 1.15rem;
+      cursor: pointer;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-gear-btn:hover {
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* 6. Customizer Editor details */
+    .customizer-canvas {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: 1px dashed rgba(0, 255, 255, 0.4);
+      background-image: radial-gradient(rgba(0, 255, 255, 0.1) 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .customizer-btn {
+      position: absolute;
+      cursor: move;
+      transition: outline 0.15s ease;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .customizer-btn.selected {
+      outline: 2px solid #ffffff;
+      box-shadow: 0 0 15px #ffffff, 0 0 10px var(--accent-color);
+      z-index: 10;
+    }
+
+    .property-panel-card {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 290px;
+      background: rgba(22, 28, 36, 0.95);
+      border: 1.5px solid var(--accent-color);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.8), 0 0 12px var(--accent-glow);
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .panel-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 4px;
+    }
+
+    .panel-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel-row-label {
+      font-size: 0.7rem;
+      color: #8ab4f8;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .property-slider {
+      flex: 1;
+      accent-color: var(--accent-color);
+      height: 4px;
+      cursor: pointer;
+    }
+
+    .anchor-dropdown {
+      background: rgba(0,0,0,0.5);
+      color: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      padding: 2px 4px;
+      font-family: var(--font-sans);
+      outline: none;
+    }
+
+    /* 7. Settings screen styling */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 2px;
+      z-index: 2;
+    }
+
+    .setting-item-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .setting-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .spin-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 1px;
+      width: fit-content;
+    }
+
+    .spin-btn {
+      width: 26px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      color: var(--text-primary);
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spin-btn:hover {
+      background: var(--accent-color);
+      color: #050b11;
+    }
+
+    .spin-value {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      width: 45px;
+      text-align: center;
+    }
+
+    .theme-select-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-select-btn {
+      flex: 1;
+      padding: 6px;
+      border: 1px solid var(--border-color);
+      background: rgba(255,255,255,0.02);
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .theme-select-btn.active {
+      background: var(--accent-color);
+      color: #050b11;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* Connection Lost Screen matching screenshot 1000% */
+    .connection-lost-bg {
+      background-color: #121016 !important; /* Exact violet dark tint from screenshot */
+    }
+
+    .lost-title-red {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ff8a80; /* Light red */
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255,138,128,0.3);
+      text-transform: uppercase;
+    }
+
+    .lost-desc-mono {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #b0bec5;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .lost-btn-circle {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: #00ffff;
+      border: none;
+      color: #000000;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5), 0 0 15px rgba(0,255,255,0.4);
+      transition: transform 0.15s;
+    }
+
+    .lost-btn-circle:active {
+      transform: scale(0.93);
+    }
+
+    /* Connect Screen Failure Dialog overlay */
+    .error-dialog-box {
+      width: 480px;
+      background: #1c0d12;
+      border: 1px solid rgba(255, 23, 68, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      gap: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+    }
+
+    .error-dialog-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #7f1d1d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .error-dialog-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .error-dialog-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fca5a5;
+    }
+
+    .error-dialog-desc {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+
+    /* About links */
+    .about-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 2px;
+      z-index: 2;
+    }
+
+    .about-desc {
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    .about-links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .about-links-grid .btn {
+      height: 36px;
+      font-size: 0.75rem;
+    }
+
+    .developer-tag {
+      font-family: var(--font-mono);
+      color: var(--accent-color);
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      background: rgba(0, 255, 255, 0.04);
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    /* QR scan laser overlay */
+    .qr-viewfinder-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      z-index: 50;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .qr-bracket-box {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+
+    .qr-laser-line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-color);
+      box-shadow: 0 0 8px var(--accent-color);
+      animation: qrScan 1.8s infinite ease-in-out;
+    }
+
+    @keyframes qrScan {
+      0% { top: 0%; }
+      50% { top: 100%; }
+      100% { top: 0%; }
+    }
+
+    /* Alert Toast notifications */
+    .mock-toast {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      background: rgba(10, 20, 30, 0.95);
+      border: 1.5px solid var(--accent-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: #ffffff;
+      font-weight: 700;
+      opacity: 0;
+      transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 1000;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .mock-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mockup Options Panel (External controls) -->
+  <div class="options-panel">
+    <div class="options-title">AIRSTIX HIGH-FIDELITY WEB MOCKUP</div>
+    
+    <div class="option-group">
+      <span class="option-label">Base Color Accent:</span>
+      <div class="color-btn active" style="background-color: #00ffff;" onclick="setAccent('cyan', '#00ffff')" id="accent-cyan"></div>
+      <div class="color-btn" style="background-color: #2979ff;" onclick="setAccent('blue', '#2979ff')" id="accent-blue"></div>
+      <div class="color-btn" style="background-color: #00e676;" onclick="setAccent('green', '#00e676')" id="accent-green"></div>
+      <div class="color-btn" style="background-color: #ff9100;" onclick="setAccent('orange', '#ff9100')" id="accent-orange"></div>
+      <div class="color-btn" style="background-color: #d500f9;" onclick="setAccent('purple', '#d500f9')" id="accent-purple"></div>
+      <div class="color-btn" style="background-color: #ff1744;" onclick="setAccent('red', '#ff1744')" id="accent-red"></div>
+    </div>
+
+    <div class="option-group">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-toggle-text">LIGHT MODE</button>
+      <button class="reset-mock-btn" onclick="resetMockupState()">RESET ALL DATA</button>
+    </div>
+  </div>
+
+  <!-- Screen selectors for verification -->
+  <div class="screen-debugger">
+    <button class="debug-screen-btn active" id="debug-main_menu" onclick="navigateTo('main_menu')">Main Menu</button>
+    <button class="debug-screen-btn" id="debug-connect_screen" onclick="navigateTo('connect_screen')">Connect Form</button>
+    <button class="debug-screen-btn" id="debug-connecting_screen" onclick="navigateTo('connecting_screen')">Connecting Sonar</button>
+    <button class="debug-screen-btn" id="debug-gamepad" onclick="navigateTo('gamepad')">Gamepad screen</button>
+    <button class="debug-screen-btn" id="debug-gamepad_customization" onclick="navigateTo('gamepad_customization')">Visual customizer</button>
+    <button class="debug-screen-btn" id="debug-settings_screen" onclick="navigateTo('settings_screen')">Preferences</button>
+    <button class="debug-screen-btn" id="debug-about_screen" onclick="navigateTo('about_screen')">About page</button>
+    <button class="debug-screen-btn" id="debug-connection_lost" onclick="navigateTo('connection_lost')">Connection Lost</button>
+  </div>
+
+  <!-- Bezel wrapper frame -->
+  <div class="device-container">
+    <div class="device-speaker"></div>
+    <div class="device-camera"></div>
+
+    <!-- Active App screen -->
+    <div class="device-screen" id="device-screen">
+      
+      <!-- Cyan outline brackets for sci-fi layout theme -->
+      <div class="hud-bracket hud-tl"></div>
+      <div class="hud-bracket hud-tr"></div>
+      <div class="hud-bracket hud-bl"></div>
+      <div class="hud-bracket hud-br"></div>
+
+      <!-- Action Toast popups -->
+      <div class="mock-toast" id="screen-toast">Changes Saved</div>
+
+      <!-- ================= 1. MAIN MENU SCREEN ================= -->
+      <div class="screen-page active" id="screen-main_menu">
+        <div class="menu-header-bar">
+          <button class="btn" style="padding: 7px 11px;" onclick="openProfilesDialog()">
+            <!-- SVG Folder Icon -->
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            PROFILES
+          </button>
+          <button class="btn btn-red" style="padding: 7px 11px;" onclick="showToast('Close application triggered')">
+            <!-- SVG Power Icon -->
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+          </button>
+        </div>
+
+        <div class="menu-main-content">
+          <div class="app-title-glow" id="app-logo-title">AIRSTIX</div>
+          <div class="menu-btn-stack">
+            <button class="btn btn-cyan" onclick="navigateTo('connect_screen')" id="main-action-btn">CONNECT</button>
+            <button class="btn" onclick="navigateTo('gamepad_customization')">CUSTOMIZE LAYOUT</button>
+            <button class="btn" onclick="navigateTo('settings_screen')">SETTINGS</button>
+            <button class="btn" onclick="navigateTo('about_screen')">ABOUT</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. CONNECT SCREEN ================= -->
+      <div class="screen-page" id="screen-connect_screen">
+        <div class="menu-header-bar" style="margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn" style="padding: 5px 10px;" onclick="navigateTo('main_menu')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <span style="font-weight: 800; font-size: 0.9rem; letter-spacing: 1.5px;">ESTABLISH CONNECTION</span>
+          </div>
+        </div>
+
+        <div class="connect-grid">
+          <!-- Inputs fields -->
+          <div class="connect-form-section">
+            <div class="form-row">
+              <span class="form-row-label">IP Address</span>
+              <input type="text" class="input-field" value="192.168.1.100" id="connect-ip" placeholder="e.g. 192.168.1.5">
+            </div>
+            
+            <div class="form-row">
+              <span class="form-row-label">Port</span>
+              <input type="text" class="input-field" value="8080" id="connect-port" placeholder="e.g. 8080">
+            </div>
+
+            <div class="toggle-container">
+              <span class="form-row-label" style="color: var(--text-primary); text-transform: none; letter-spacing:0;">Save connection credentials</span>
+              <label class="switch-widget">
+                <input type="checkbox" checked id="save-credentials-switch">
+                <span class="slider-track"></span>
+              </label>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 2px;">
+              <button class="btn" style="flex: 1;" onclick="startQRScan()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                SCAN QR CODE
+              </button>
+              <button class="btn btn-cyan" style="flex: 1.1;" onclick="startConnectingFlow()">CONNECT</button>
+            </div>
+          </div>
+
+          <!-- Connection Saved History items -->
+          <div class="connect-history-section">
+            <span class="form-row-label">Previous Targets</span>
+            <div class="history-list" id="history-items-container">
+              <!-- JS rendered -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Mock QR Scanner screen -->
+        <div class="qr-viewfinder-overlay" id="qr-scanner">
+          <div class="qr-bracket-box">
+            <div class="qr-laser-line"></div>
+          </div>
+          <span style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--accent-color);">ALIGN CODE WITHIN VIEWPORT</span>
+          <button class="btn btn-red" style="padding: 5px 10px; font-size: 0.7rem;" onclick="cancelQRScan()">CANCEL</button>
+        </div>
+
+        <!-- Connection Error Dialog (1000% replication of screen) -->
+        <div class="modal-overlay" id="connect-error-dialog-overlay">
+          <div class="error-dialog-box">
+            <div class="error-dialog-icon">
+              <!-- Warning exclamation mark inside triangle -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <div class="error-dialog-content">
+              <span class="error-dialog-title">Connection Error</span>
+              <span class="error-dialog-desc" id="err-dialog-details">failed to connect to /192.168.1.100 (port 8080) after 5000ms: isConnected failed: ECONNREFUSED (Connection refused)</span>
+              <div style="display: flex; gap: 10px; margin-top: 5px;">
+                <button class="btn btn-cyan" onclick="startConnectingFlow(); closeErrorDialog()">Retry</button>
+                <button class="btn btn-cyan" onclick="showToast('Running background diagnostics...'); closeErrorDialog()">Run Diagnostics</button>
+                <button class="btn" style="border:none; background:transparent; box-shadow:none; color: var(--accent-color);" onclick="closeErrorDialog()">Back</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 3. CONNECTING SCREEN ================= -->
+      <div class="screen-page" id="screen-connecting_screen">
+        <div class="connecting-wrapper">
+          <div class="sonar-box">
+            <div class="sonar-ring"></div>
+            <div class="sonar-ring"></div>
+            <div class="sonar-ring"></div>
+            <div class="sonar-center"></div>
+          </div>
+          <div style="text-align: center;">
+            <p style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--accent-color); letter-spacing: 1px;" id="connecting-status-text">Handshaking sockets...</p>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 3px;">Establishing connection tunnel</p>
+          </div>
+          <button class="btn" style="width: 120px; padding: 7px; font-size: 0.75rem;" onclick="cancelConnectingFlow()">CANCEL</button>
+        </div>
+      </div>
+
+      <!-- ================= 4. GAMEPAD SCREEN (1000% Layout matching) ================= -->
+      <div class="screen-page" id="screen-gamepad" style="padding: 0;">
+        <div class="gamepad-container" id="live-gamepad-canvas">
+          <!-- JS rendered exact buttons -->
+        </div>
+
+        <!-- Pause Settings Menu modal popup -->
+        <div class="modal-overlay" id="ingame-settings-overlay">
+          <div class="modal-box" style="width: 320px;">
+            <div class="modal-header">
+              <span class="modal-title" style="font-size: 0.95rem; letter-spacing: 1px;">PAUSED</span>
+            </div>
+            <button class="btn btn-cyan" onclick="closeIngameMenu()">RESUME GAME</button>
+            <button class="btn" onclick="navigateTo('gamepad_customization'); closeIngameMenu()">EDIT LAYOUT</button>
+            <button class="btn" onclick="navigateTo('settings_screen'); closeIngameMenu()">SETTINGS</button>
+            <button class="btn btn-red" onclick="disconnectGamepadSession()">DISCONNECT</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 5. CONNECTION LOST SCREEN (1000% replication) ================= -->
+      <div class="screen-page connection-lost-bg" id="screen-connection_lost">
+        <div class="connecting-wrapper" style="gap: 15px;">
+          <h2 class="lost-title-red">CONNECTION ERROR</h2>
+          <p class="lost-desc-mono" id="disconnect-error-msg">Connection lost: Connection+lost:+Server+closed+connection</p>
+          
+          <div style="display: flex; gap: 30px; margin-top: 25px;">
+            <button class="lost-btn-circle" onclick="reconnectFromLost()">reconnect</button>
+            <button class="lost-btn-circle" onclick="navigateTo('main_menu')">Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 6. GAMEPAD CUSTOMIZATION CANVAS SCREEN ================= -->
+      <div class="screen-page" id="screen-gamepad_customization" style="padding: 0;">
+        <div class="customizer-canvas" id="customizer-drag-canvas" onmousemove="onDragMove(event)" onmouseup="onDragEnd(event)" onmouseleave="onDragEnd(event)" ontouchmove="onDragMove(event)" ontouchend="onDragEnd(event)">
+          <!-- Drag-and-drop elements -->
+        </div>
+
+        <!-- Floating property details panel -->
+        <div class="property-panel-card" id="floating-property-panel" style="display: none;">
+          <div class="panel-row-header">
+            <span style="font-weight: 800; font-size: 0.75rem; letter-spacing: 1px;" id="panel-component-title">COMPONENT</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="panel-row-label" style="font-size: 0.6rem;">Visible</span>
+              <label class="switch-widget" style="width: 32px; height: 18px;">
+                <input type="checkbox" id="prop-visible-switch" onchange="updateSelectedProp('visible', this.checked)">
+                <span class="slider-track" style="before: {width: 10px; height: 10px;}"></span>
+              </label>
+              <button style="background:transparent; border:none; color:#ff5252; font-weight:bold; cursor:pointer;" onclick="deselectComponent()">✕</button>
+            </div>
+          </div>
+
+          <!-- Per-Button Haptic Switch (Gated on global preference) -->
+          <div class="panel-row" id="prop-haptic-row">
+            <span class="panel-row-label">Haptic Feedback</span>
+            <label class="switch-widget" style="width: 32px; height: 18px;">
+              <input type="checkbox" id="prop-haptic-switch" onchange="updateSelectedProp('hapticEnabled', this.checked)">
+              <span class="slider-track"></span>
+            </label>
+          </div>
+
+          <div class="panel-row">
+            <span class="panel-row-label">Anchor</span>
+            <select class="anchor-dropdown" id="prop-anchor-select" onchange="updateSelectedProp('anchor', this.value)">
+              <option value="TOP_LEFT">Top Left</option>
+              <option value="TOP_CENTER">Top Center</option>
+              <option value="TOP_RIGHT">Top Right</option>
+              <option value="CENTER_LEFT">Center Left</option>
+              <option value="CENTER">Center</option>
+              <option value="CENTER_RIGHT">Center Right</option>
+              <option value="BOTTOM_LEFT">Bottom Left</option>
+              <option value="BOTTOM_CENTER">Bottom Center</option>
+              <option value="BOTTOM_RIGHT">Bottom Right</option>
+            </select>
+          </div>
+
+          <div class="panel-row">
+            <span class="panel-row-label">Opacity</span>
+            <input type="range" min="0.1" max="1" step="0.05" class="property-slider" id="prop-opacity-slider" oninput="updateSelectedProp('opacity', parseFloat(this.value))">
+          </div>
+
+          <div class="panel-row">
+            <span class="panel-row-label">Scale</span>
+            <input type="range" min="0.5" max="2" step="0.05" class="property-slider" id="prop-scale-slider" oninput="updateSelectedProp('scale', parseFloat(this.value))">
+          </div>
+
+          <div style="display: flex; gap: 6px;">
+            <button class="btn" style="flex: 1; padding: 5px; font-size: 0.65rem;" onclick="resetSelectedPosition()">RESET POS</button>
+            <button class="btn btn-red" style="flex: 1; padding: 5px; font-size: 0.65rem;" onclick="deselectComponent()">CLOSE</button>
+          </div>
+        </div>
+
+        <!-- Customizer options dialog trigger -->
+        <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
+          <button class="btn" style="padding: 5px 10px; font-size: 0.7rem;" onclick="openCustomizerMenu()">OPTIONS MENU</button>
+          <button class="btn btn-cyan" style="padding: 5px 14px; font-size: 0.7rem;" onclick="saveCustomLayout()">SAVE LAYOUT</button>
+        </div>
+
+        <!-- Customizer Options Menu dialog -->
+        <div class="modal-overlay" id="customizer-options-overlay">
+          <div class="modal-box" style="width: 380px;">
+            <div class="modal-header">
+              <span class="modal-title" style="font-size: 0.95rem;">CUSTOMIZER OPTIONS</span>
+            </div>
+            
+            <div class="panel-row">
+              <span class="panel-row-label">Group Face Buttons</span>
+              <label class="switch-widget">
+                <input type="checkbox" checked id="customizer-face-grouped" onchange="toggleGroupedMode('face', this.checked)">
+                <span class="slider-track"></span>
+              </label>
+            </div>
+
+            <div class="panel-row">
+              <span class="panel-row-label">Group D-Pad Directionals</span>
+              <label class="switch-widget">
+                <input type="checkbox" checked id="customizer-dpad-grouped" onchange="toggleGroupedMode('dpad', this.checked)">
+                <span class="slider-track"></span>
+              </label>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="btn" style="flex: 1; font-size: 0.7rem;" onclick="mockImportJSON()">IMPORT JSON</button>
+              <button class="btn" style="flex: 1; font-size: 0.7rem;" onclick="mockExportJSON()">EXPORT JSON</button>
+            </div>
+
+            <button class="btn btn-red" style="margin-top: 4px; font-size: 0.75rem;" onclick="resetCustomizerToDefaults()">RESET TO DEFAULTS</button>
+            <button class="btn btn-cyan" onclick="closeCustomizerMenu()">RESUME EDITING</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 7. SETTINGS SCREEN ================= -->
+      <div class="screen-page" id="screen-settings_screen">
+        <div class="menu-header-bar" style="margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn" style="padding: 5px 10px;" onclick="navigateTo('main_menu')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <span style="font-weight: 800; font-size: 0.9rem; letter-spacing: 1.5px;">PREFERENCES</span>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <div class="setting-item-box">
+            <span class="setting-title">Color Mode</span>
+            <div class="theme-select-row">
+              <div class="theme-select-btn active" id="theme-btn-dark" onclick="setMockTheme('dark')">DARK</div>
+              <div class="theme-select-btn" id="theme-btn-light" onclick="setMockTheme('light')">LIGHT</div>
+            </div>
+          </div>
+
+          <div class="setting-item-box">
+            <span class="setting-title">Haptic Feedback</span>
+            <div class="toggle-container">
+              <span style="font-size: 0.75rem; color: var(--text-primary);">Haptic feedback on press</span>
+              <label class="switch-widget">
+                <input type="checkbox" checked id="settings-global-haptic" onchange="toggleGlobalHaptic(this.checked)">
+                <span class="slider-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item-box">
+            <span class="setting-title">Vibration Intensity</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);" id="intensity-desc">Medium</span>
+              <div class="spin-box">
+                <button class="spin-btn" onclick="stepHapticIntensity(-1)">-</button>
+                <div class="spin-value" id="haptic-intensity-val">2</div>
+                <button class="spin-btn" onclick="stepHapticIntensity(1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-item-box">
+            <span class="setting-title">Polling Delay</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Packet rate (ms)</span>
+              <div class="spin-box">
+                <button class="spin-btn" onclick="stepPollingDelay(-5)">-</button>
+                <div class="spin-value" id="polling-delay-val">10</div>
+                <button class="spin-btn" onclick="stepPollingDelay(5)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-red" style="margin-top: 12px; width: 100%;" onclick="openResetSettingsConfirm()">RESET ALL SETTINGS</button>
+      </div>
+
+      <!-- ================= 8. ABOUT SCREEN ================= -->
+      <div class="screen-page" id="screen-about_screen">
+        <div class="menu-header-bar" style="margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn" style="padding: 5px 10px;" onclick="navigateTo('main_menu')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <span style="font-weight: 800; font-size: 0.9rem; letter-spacing: 1.5px;">ABOUT DEVELOPER</span>
+          </div>
+        </div>
+
+        <div class="about-wrapper">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h2 style="font-weight: 800; font-size: 1.05rem; color: var(--accent-color);">AIRstix Gamepad</h2>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">Version 2.0.0-release</p>
+            </div>
+            <div class="developer-tag">Amarthya S. George</div>
+          </div>
+
+          <p class="about-desc">
+            AIRstix is a high-performance virtual gamepad tool that converts Android touch gestures into low-latency gamepad inputs, transmitted over network sockets to a companion desktop server.
+          </p>
+
+          <div class="about-links-grid">
+            <button class="btn" onclick="mockOpenLink('Source Code')">SOURCE CODE</button>
+            <button class="btn" onclick="mockOpenLink('Report Issues')">ISSUES</button>
+            <button class="btn" onclick="mockOpenLink('Releases')">RELEASES</button>
+            <button class="btn" onclick="mockOpenLink('License')">LICENSE</button>
+          </div>
+          <button class="btn btn-cyan" onclick="mockOpenLink('Server Download')">DOWNLOAD COMPANION SERVER</button>
+        </div>
+      </div>
+
+      <!-- ================= POPUPS / MODALS ================= -->
+
+      <!-- A. Profiles Dialog (1000% replication of media__1784038673384.jpg) -->
+      <div class="modal-overlay" id="profiles-dialog-overlay">
+        <div class="modal-box" style="background-color: #22252a;">
+          <div class="modal-header">
+            <span class="modal-title" style="font-size: 1.25rem;">Layout Profiles</span>
+          </div>
+          
+          <div class="profile-list" id="profiles-list-container" style="margin-top: 10px;">
+            <!-- JS loaded rows -->
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn" style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #ffffff;" onclick="openCreateProfileInput()">Create Profile</button>
+            <button class="btn btn-cyan" style="flex: 1; border-radius: 20px; color: #000000; font-weight: bold; padding: 10px 0;" onclick="closeProfilesDialog()">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- B. Create Profile Text Input -->
+      <div class="modal-overlay" id="create-profile-input-overlay" style="z-index: 20;">
+        <div class="modal-box" style="width: 300px; background-color: #22252a;">
+          <div class="modal-header">
+            <span class="modal-title" style="font-size: 0.85rem;">Create New Profile</span>
+          </div>
+          <div class="form-row">
+            <span class="form-row-label">Profile Name</span>
+            <input type="text" class="input-field" placeholder="e.g. MyLayout" id="new-profile-name-input">
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 8px;">
+            <button class="btn" style="flex: 1; font-size: 0.75rem;" onclick="closeCreateProfileInput()">Cancel</button>
+            <button class="btn btn-cyan" style="flex: 1; font-size: 0.75rem;" onclick="confirmCreateProfile()">Create</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- C. Settings Reset Dialog -->
+      <div class="modal-overlay" id="settings-reset-overlay">
+        <div class="modal-box" style="width: 300px; background-color: #22252a;">
+          <div class="modal-header">
+            <span class="modal-title" style="font-size: 0.85rem; color: #ff5252;">RESET PREFERENCES?</span>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">
+            This will restore all controls, themes, and rates back to stock parameters. Your connection history will remain intact.
+          </p>
+          <div style="display: flex; gap: 10px; margin-top: 8px;">
+            <button class="btn" style="flex: 1; font-size: 0.75rem;" onclick="closeResetSettingsConfirm()">CANCEL</button>
+            <button class="btn btn-red" style="flex: 1; font-size: 0.75rem;" onclick="confirmResetSettings()">RESET</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // State management variables
+    let activeScreen = 'main_menu';
+    let themeMode = 'dark';
+    let accentColorName = 'cyan';
+    let accentHex = '#00ffff';
+    let globalHaptic = true;
+    let hapticIntensity = 2;
+    let pollingDelay = 10;
+    let activeProfile = 'Default Layout';
+    
+    let profiles = ['Default Layout', '1q', 'Racing Config'];
+    
+    let historyList = [
+      { ip: '192.168.1.5', port: '8080' },
+      { ip: '192.168.1.41', port: '39765' },
+      { ip: '10.0.0.8', port: '8080' }
+    ];
+
+    let faceButtonsGrouped = true;
+    let dpadGrouped = true;
+
+    // Component configurations matching Kotlin ButtonConfig and screenshots
+    let defaultButtonConfigs = {
+      'LEFT_ANALOG_STICK': { visible: true, scale: 1.0, opacity: 0.9, offsetX: -0.22, offsetY: -0.16, anchor: 'CENTER_LEFT', hapticEnabled: true, displayName: 'Left Stick' },
+      'RIGHT_ANALOG_STICK': { visible: true, scale: 1.0, opacity: 0.9, offsetX: -0.22, offsetY: -0.16, anchor: 'CENTER_RIGHT', hapticEnabled: false, displayName: 'Right Stick' },
+      
+      'DPAD': { visible: true, scale: 1.05, opacity: 0.9, offsetX: 0.12, offsetY: -0.12, anchor: 'BOTTOM_LEFT', hapticEnabled: true, displayName: 'D-Pad Group' },
+      // Individual D-Pad buttons when split
+      'DPAD_UP': { visible: true, scale: 1.0, opacity: 0.9, offsetX: 0.12, offsetY: -0.23, anchor: 'BOTTOM_LEFT', hapticEnabled: true, displayName: 'D-Pad Up' },
+      'DPAD_DOWN': { visible: true, scale: 1.0, opacity: 0.9, offsetX: 0.12, offsetY: -0.01, anchor: 'BOTTOM_LEFT', hapticEnabled: true, displayName: 'D-Pad Down' },
+      'DPAD_LEFT': { visible: true, scale: 1.0, opacity: 0.9, offsetX: 0.02, offsetY: -0.12, anchor: 'BOTTOM_LEFT', hapticEnabled: true, displayName: 'D-Pad Left' },
+      'DPAD_RIGHT': { visible: true, scale: 1.0, opacity: 0.9, offsetX: 0.22, offsetY: -0.12, anchor: 'BOTTOM_LEFT', hapticEnabled: true, displayName: 'D-Pad Right' },
+
+      'FACE_BUTTONS': { visible: true, scale: 1.05, opacity: 0.9, offsetX: -0.12, offsetY: -0.12, anchor: 'BOTTOM_RIGHT', hapticEnabled: true, displayName: 'Face Buttons' },
+      // Individual Face buttons when split
+      'FACE_BUTTON_A': { visible: true, scale: 1.0, opacity: 0.9, offsetX: -0.12, offsetY: -0.01, anchor: 'BOTTOM_RIGHT', hapticEnabled: true, displayName: 'Face Button A' },
+      'FACE_BUTTON_B': { visible: true, scale: 1.0, opacity: 0.9, offsetX: -0.02, offsetY: -0.12, anchor: 'BOTTOM_RIGHT', hapticEnabled: true, displayName: 'Face Button B' },
+      'FACE_BUTTON_X': { visible: true, scale: 1.0, opacity: 0.9, offsetX: -0.22, offsetY: -0.12, anchor: 'BOTTOM_RIGHT', hapticEnabled: true, displayName: 'Face Button X' },
+      'FACE_BUTTON_Y': { visible: true, scale: 1.0, opacity: 0.9, offsetX: -0.12, offsetY: -0.23, anchor: 'BOTTOM_RIGHT', hapticEnabled: true, displayName: 'Face Button Y' },
+
+      'LEFT_TRIGGER': { visible: true, scale: 1.0, opacity: 0.8, offsetX: 0.05, offsetY: 0.06, anchor: 'BOTTOM_LEFT', hapticEnabled: true, displayName: 'Left Trigger (LT)' },
+      'RIGHT_TRIGGER': { visible: true, scale: 1.0, opacity: 0.8, offsetX: -0.05, offsetY: 0.06, anchor: 'BOTTOM_RIGHT', hapticEnabled: true, displayName: 'Right Trigger (RT)' },
+      'LEFT_SHOULDER': { visible: true, scale: 1.0, opacity: 0.8, offsetX: -0.20, offsetY: 0.08, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Left Shoulder (LB)' },
+      'RIGHT_SHOULDER': { visible: true, scale: 1.0, opacity: 0.8, offsetX: 0.20, offsetY: 0.08, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Right Shoulder (RB)' },
+      
+      'SELECT_BUTTON': { visible: true, scale: 0.9, opacity: 0.8, offsetX: -0.12, offsetY: 0.26, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Select Button' },
+      'START_BUTTON': { visible: true, scale: 0.9, opacity: 0.8, offsetX: 0.12, offsetY: 0.26, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Start Button' },
+      'SETTINGS_BUTTON': { visible: true, scale: 1.0, opacity: 0.8, offsetX: 0.0, offsetY: 0.32, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Settings Gear' },
+      'HOME_BUTTON': { visible: true, scale: 0.9, opacity: 0.8, offsetX: 0.04, offsetY: 0.26, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Home Button' },
+      'CAPTURE_BUTTON': { visible: true, scale: 0.9, opacity: 0.8, offsetX: -0.04, offsetY: 0.26, anchor: 'TOP_CENTER', hapticEnabled: true, displayName: 'Capture Button' }
+    };
+
+    let buttonConfigs = JSON.parse(JSON.stringify(defaultButtonConfigs));
+
+    // Selection properties
+    let selectedComponent = null;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialComponentOffsetX = 0;
+    let initialComponentOffsetY = 0;
+
+    // Load initial layout elements
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHistory();
+      renderProfiles();
+      renderGamepadButtons();
+      renderCustomizerButtons();
+    });
+
+    // NAVIGATION SYSTEM WITH COMPOSE ANIMATIONS
+    function navigateTo(screenId) {
+      const oldScreen = activeScreen;
+      activeScreen = screenId;
+      
+      const allPages = document.querySelectorAll('.screen-page');
+      
+      // Clean animations classes
+      allPages.forEach(page => {
+        page.classList.remove('active', 'slide-up-enter', 'slide-down-exit', 'slide-left-enter', 'slide-right-exit');
+      });
+
+      const activePage = document.getElementById('screen-' + screenId);
+      if (activePage) {
+        activePage.classList.add('active');
+        
+        // Add Jetpack Compose equivalent animations
+        if (oldScreen === 'main_menu' && (screenId === 'settings_screen' || screenId === 'about_screen' || screenId === 'gamepad_customization')) {
+          activePage.classList.add('slide-up-enter');
+        } else if ((oldScreen === 'settings_screen' || oldScreen === 'about_screen' || oldScreen === 'gamepad_customization') && screenId === 'main_menu') {
+          activePage.classList.add('slide-up-enter'); // Slide back down or up transition
+        } else if (oldScreen === 'connect_screen' && screenId === 'connecting_screen') {
+          activePage.classList.add('slide-left-enter');
+        } else if (oldScreen === 'connecting_screen' && screenId === 'connect_screen') {
+          activePage.classList.add('slide-left-enter');
+        }
+      }
+
+      // Update Screen Debugger Active status
+      document.querySelectorAll('.debug-screen-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      const debugBtn = document.getElementById('debug-' + screenId);
+      if (debugBtn) debugBtn.classList.add('active');
+
+      // Hook for connecting screen transition simulation
+      if (screenId === 'connecting_screen') {
+        const ip = document.getElementById('connect-ip').value;
+        const port = document.getElementById('connect-port').value;
+        document.getElementById('connecting-status-text').innerText = `Connecting to ${ip}:${port}...`;
+        
+        // Setup 2.5s transition simulation
+        setTimeout(() => {
+          if (activeScreen === 'connecting_screen') {
+            if (ip === '192.168.1.100' && port === '8080') {
+              // Trigger 1000% error dialog replication
+              navigateTo('connect_screen');
+              openErrorDialog(`failed to connect to /192.168.1.100 (port 8080) after 5000ms: isConnected failed: ECONNREFUSED (Connection refused)`);
+            } else {
+              navigateTo('gamepad');
+              showToast('Connected to server successfully');
+              document.getElementById('main-action-btn').innerText = 'RESUME';
+            }
+          }
+        }, 2200);
+      }
+
+      if (screenId === 'gamepad') {
+        renderGamepadButtons();
+      }
+
+      if (screenId === 'gamepad_customization') {
+        deselectComponent();
+        renderCustomizerButtons();
+        togglePropertyPanelHapticRow();
+      }
+    }
+
+    // Dynamic Haptic Row Visibility on floating property panel
+    function togglePropertyPanelHapticRow() {
+      const hapticRow = document.getElementById('prop-haptic-row');
+      if (globalHaptic) {
+        hapticRow.style.display = 'flex';
+      } else {
+        hapticRow.style.display = 'none';
+      }
+    }
+
+    // ACCENT COLOR SELECTION
+    function setAccent(colorName, hexValue) {
+      accentColorName = colorName;
+      accentHex = hexValue;
+      
+      const root = document.documentElement;
+      root.style.setProperty('--accent-color', hexValue);
+      root.style.setProperty('--accent-glow', hexValue + '66');
+
+      document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById('accent-' + colorName).classList.add('active');
+      showToast(`Accent set to ${colorName.toUpperCase()}`);
+    }
+
+    // THEME SELECTION
+    function toggleTheme() {
+      const screen = document.getElementById('device-screen');
+      const toggleTextBtn = document.getElementById('theme-toggle-text');
+      
+      if (themeMode === 'dark') {
+        themeMode = 'light';
+        screen.classList.add('light-mode');
+        toggleTextBtn.innerText = 'DARK MODE';
+        document.getElementById('theme-btn-light').classList.add('active');
+        document.getElementById('theme-btn-dark').classList.remove('active');
+      } else {
+        themeMode = 'dark';
+        screen.classList.remove('light-mode');
+        toggleTextBtn.innerText = 'LIGHT MODE';
+        document.getElementById('theme-btn-dark').classList.add('active');
+        document.getElementById('theme-btn-light').classList.remove('active');
+      }
+    }
+
+    function setMockTheme(mode) {
+      const screen = document.getElementById('device-screen');
+      const toggleTextBtn = document.getElementById('theme-toggle-text');
+      themeMode = mode;
+      
+      if (mode === 'light') {
+        screen.classList.add('light-mode');
+        toggleTextBtn.innerText = 'DARK MODE';
+        document.getElementById('theme-btn-light').classList.add('active');
+        document.getElementById('theme-btn-dark').classList.remove('active');
+      } else {
+        screen.classList.remove('light-mode');
+        toggleTextBtn.innerText = 'LIGHT MODE';
+        document.getElementById('theme-btn-dark').classList.add('active');
+        document.getElementById('theme-btn-light').classList.remove('active');
+      }
+    }
+
+    // TOAST ALERTS
+    function showToast(message) {
+      const toast = document.getElementById('screen-toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // CONNECTION HISTORY
+    function renderHistory() {
+      const container = document.getElementById('history-items-container');
+      container.innerHTML = '';
+      
+      historyList.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'history-card';
+        div.innerHTML = `
+          <div onclick="selectHistoryItem('${item.ip}', '${item.port}')" style="flex:1; display:flex; flex-direction:column;">
+            <span style="font-weight:bold; color:var(--text-primary);">${item.ip}</span>
+            <span style="font-size:0.65rem; color:var(--text-muted);">Port: ${item.port}</span>
+          </div>
+          <button class="profile-delete-btn" onclick="deleteHistoryItem(event, ${index})">✕</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectHistoryItem(ip, port) {
+      document.getElementById('connect-ip').value = ip;
+      document.getElementById('connect-port').value = port;
+      showToast(`Selected: ${ip}:${port}`);
+    }
+
+    function deleteHistoryItem(event, index) {
+      event.stopPropagation();
+      historyList.splice(index, 1);
+      renderHistory();
+      showToast('History item deleted');
+    }
+
+    // QR SCAN SIMULATION
+    function startQRScan() {
+      document.getElementById('qr-scanner').style.display = 'flex';
+      setTimeout(() => {
+        if (document.getElementById('qr-scanner').style.display === 'flex') {
+          document.getElementById('connect-ip').value = '192.168.1.41';
+          document.getElementById('connect-port').value = '39765';
+          cancelQRScan();
+          showToast('Scanned code: 192.168.1.41:39765');
+        }
+      }, 2000);
+    }
+
+    function cancelQRScan() {
+      document.getElementById('qr-scanner').style.display = 'none';
+    }
+
+    // ERROR DIALOG POPUP
+    function openErrorDialog(msg) {
+      document.getElementById('err-dialog-details').innerText = msg;
+      document.getElementById('connect-error-dialog-overlay').style.display = 'flex';
+    }
+
+    function closeErrorDialog() {
+      document.getElementById('connect-error-dialog-overlay').style.display = 'none';
+    }
+
+    // CONNECT FLOW
+    function startConnectingFlow() {
+      const ip = document.getElementById('connect-ip').value;
+      const port = document.getElementById('connect-port').value;
+      if (!ip || !port) {
+        showToast('IP & Port required');
+        return;
+      }
+      
+      if (document.getElementById('save-credentials-switch').checked) {
+        if (!historyList.some(item => item.ip === ip && item.port === port)) {
+          historyList.unshift({ ip, port });
+          renderHistory();
+        }
+      }
+      navigateTo('connecting_screen');
+    }
+
+    function cancelConnectingFlow() {
+      navigateTo('connect_screen');
+      showToast('Connection cancelled');
+    }
+
+    // GAMEPAD SCREEN DISPATCH
+    function disconnectGamepadSession() {
+      closeIngameMenu();
+      navigateTo('main_menu');
+      document.getElementById('main-action-btn').innerText = 'CONNECT';
+      showToast('Disconnected from server');
+    }
+
+    function openIngameMenu() {
+      document.getElementById('ingame-settings-overlay').style.display = 'flex';
+    }
+
+    // Settings screen triggers
+    function toggleGlobalHaptic(checked) {
+      globalHaptic = checked;
+      togglePropertyPanelHapticRow();
+      showToast(`Global Haptics: ${checked ? 'ON' : 'OFF'}`);
+    }
+
+    function stepHapticIntensity(amount) {
+      hapticIntensity = Math.max(1, Math.min(3, hapticIntensity + amount));
+      document.getElementById('haptic-intensity-val').innerText = hapticIntensity;
+      
+      const desc = hapticIntensity === 1 ? 'Soft' : hapticIntensity === 2 ? 'Medium' : 'Strong';
+      document.getElementById('intensity-desc').innerText = desc;
+      
+      showToast(`Haptic Intensity: ${desc}`);
+    }
+
+    function stepPollingDelay(amount) {
+      pollingDelay = Math.max(5, Math.min(50, pollingDelay + amount));
+      document.getElementById('polling-delay-val').innerText = pollingDelay;
+      showToast(`Polling delay: ${pollingDelay} ms`);
+    }
+
+    function openResetSettingsConfirm() {
+      document.getElementById('settings-reset-overlay').style.display = 'flex';
+    }
+
+    function closeResetSettingsConfirm() {
+      document.getElementById('settings-reset-overlay').style.display = 'none';
+    }
+
+    function confirmResetSettings() {
+      globalHaptic = true;
+      hapticIntensity = 2;
+      pollingDelay = 10;
+      themeMode = 'dark';
+      
+      document.getElementById('settings-global-haptic').checked = true;
+      document.getElementById('haptic-intensity-val').innerText = '2';
+      document.getElementById('intensity-desc').innerText = 'Medium';
+      document.getElementById('polling-delay-val').innerText = '10';
+      
+      setMockTheme('dark');
+      setAccent('cyan', '#00ffff');
+      closeResetSettingsConfirm();
+      showToast('Settings reset to default');
+    }
+
+    // PROFILES DIALOG (1000% MATCHING)
+    function openProfilesDialog() {
+      document.getElementById('profiles-dialog-overlay').style.display = 'flex';
+    }
+
+    function closeProfilesDialog() {
+      document.getElementById('profiles-dialog-overlay').style.display = 'none';
+    }
+
+    function renderProfiles() {
+      const container = document.getElementById('profiles-list-container');
+      container.innerHTML = '';
+      
+      profiles.forEach(pName => {
+        const isActive = pName === activeProfile;
+        const div = document.createElement('div');
+        div.className = `profile-item ${isActive ? 'active' : ''}`;
+        
+        // Use exact layout: vertical Cyan line on selected, stack icon for default, folder for custom
+        const iconSVG = pName === 'Default Layout' 
+          ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#78909c" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>` 
+          : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${isActive ? '#00ffff' : '#78909c'}" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+
+        div.innerHTML = `
+          <span class="profile-name-text" onclick="selectProfile('${pName}')">
+            ${iconSVG}
+            ${pName}
+          </span>
+          <div style="display:flex; align-items:center; gap:12px;">
+            ${isActive ? `<span style="color:#00ffff; font-size:0.95rem;">✓</span>` : ''}
+            ${pName !== 'Default Layout' ? `<button class="profile-delete-btn" onclick="deleteProfile(event, '${pName}')">🗑</button>` : ''}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectProfile(pName) {
+      activeProfile = pName;
+      renderProfiles();
+      closeProfilesDialog();
+      showToast(`Loaded Profile: ${pName}`);
+    }
+
+    function deleteProfile(event, pName) {
+      event.stopPropagation();
+      profiles = profiles.filter(p => p !== pName);
+      if (activeProfile === pName) {
+        activeProfile = 'Default Layout';
+      }
+      renderProfiles();
+      showToast(`Deleted Profile: ${pName}`);
+    }
+
+    function openCreateProfileInput() {
+      document.getElementById('new-profile-name-input').value = '';
+      document.getElementById('create-profile-input-overlay').style.display = 'flex';
+    }
+
+    function closeCreateProfileInput() {
+      document.getElementById('create-profile-input-overlay').style.display = 'none';
+    }
+
+    function confirmCreateProfile() {
+      const name = document.getElementById('new-profile-name-input').value.trim();
+      if (!name) {
+        showToast('Name cannot be empty');
+        return;
+      }
+      if (profiles.includes(name)) {
+        showToast('Profile already exists');
+        return;
+      }
+      profiles.push(name);
+      activeProfile = name;
+      renderProfiles();
+      closeCreateProfileInput();
+      showToast(`Created Profile: ${name}`);
+    }
+
+    function closeIngameMenu() {
+      document.getElementById('ingame-settings-overlay').style.display = 'none';
+    }
+
+    // ANCHOR COORDINATE SYSTEM FOR ABSOLUTE CSS
+    function getAnchorStyles(anchor, offsetX, offsetY, scale) {
+      let styles = { left: 'auto', right: 'auto', top: 'auto', bottom: 'auto', transform: '' };
+      let tx = 'translate(-50%, -50%)';
+
+      const baseHeight = 320; // Exact inside canvas height multiplier
+      const ox = offsetX * baseHeight;
+      const oy = offsetY * baseHeight;
+
+      switch(anchor) {
+        case 'TOP_LEFT':
+          styles.left = '0px';
+          styles.top = '0px';
+          tx = `translate(${ox}px, ${oy}px)`;
+          break;
+        case 'TOP_CENTER':
+          styles.left = '50%';
+          styles.top = '0px';
+          tx = `translate(calc(-50% + ${ox}px), ${oy}px)`;
+          break;
+        case 'TOP_RIGHT':
+          styles.right = '0px';
+          styles.top = '0px';
+          tx = `translate(${ox}px, ${oy}px)`;
+          break;
+        case 'CENTER_LEFT':
+          styles.left = '0px';
+          styles.top = '50%';
+          tx = `translate(${ox}px, calc(-50% + ${oy}px))`;
+          break;
+        case 'CENTER':
+          styles.left = '50%';
+          styles.top = '50%';
+          tx = `translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px))`;
+          break;
+        case 'CENTER_RIGHT':
+          styles.right = '0px';
+          styles.top = '50%';
+          tx = `translate(${ox}px, calc(-50% + ${oy}px))`;
+          break;
+        case 'BOTTOM_LEFT':
+          styles.left = '0px';
+          styles.bottom = '0px';
+          tx = `translate(${ox}px, ${oy}px)`;
+          break;
+        case 'BOTTOM_CENTER':
+          styles.left = '50%';
+          styles.bottom = '0px';
+          tx = `translate(calc(-50% + ${ox}px), ${oy}px)`;
+          break;
+        case 'BOTTOM_RIGHT':
+          styles.right = '0px';
+          styles.bottom = '0px';
+          tx = `translate(${ox}px, ${oy}px)`;
+          break;
+      }
+
+      styles.transform = `${tx} scale(${scale})`;
+      return styles;
+    }
+
+    // GAMEPAD SCREEN RENDERER (1000% replication of button forms)
+    function renderGamepadButtons() {
+      const container = document.getElementById('live-gamepad-canvas');
+      container.innerHTML = '';
+
+      // Central Settings gear
+      const settingsConfig = buttonConfigs['SETTINGS_BUTTON'];
+      if (settingsConfig.visible) {
+        const sDiv = document.createElement('div');
+        sDiv.className = 'settings-gear-btn';
+        sDiv.style.opacity = settingsConfig.opacity;
+        const styles = getAnchorStyles(settingsConfig.anchor, settingsConfig.offsetX, settingsConfig.offsetY, settingsConfig.scale);
+        Object.assign(sDiv.style, styles);
+        sDiv.innerHTML = '⚙';
+        sDiv.onclick = openIngameMenu;
+        container.appendChild(sDiv);
+      }
+
+      Object.keys(buttonConfigs).forEach(comp => {
+        if (comp === 'SETTINGS_BUTTON') return;
+        
+        const config = buttonConfigs[comp];
+        if (!config.visible) return;
+
+        // Skip ungrouped/grouped variants
+        if (faceButtonsGrouped && comp.startsWith('FACE_BUTTON_')) return;
+        if (!faceButtonsGrouped && comp === 'FACE_BUTTONS') return;
+        if (dpadGrouped && comp.startsWith('DPAD_')) return;
+        if (!dpadGrouped && comp === 'DPAD') return;
+
+        // 1. Joysticks
+        if (comp.endsWith('ANALOG_STICK')) {
+          const sDiv = document.createElement('div');
+          sDiv.className = 'stick-outer';
+          sDiv.style.width = '100px';
+          sDiv.style.height = '100px';
+          sDiv.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(sDiv.style, styles);
+          
+          sDiv.innerHTML = `
+            <div class="stick-inner" id="playstick-inner-${comp}"></div>
+            <span style="font-size:0.55rem; font-weight:700; color:var(--text-muted); position:absolute; bottom:5px;">${comp === 'LEFT_ANALOG_STICK' ? 'L' : 'R'} STICK</span>
+          `;
+          
+          container.appendChild(sDiv);
+          setupJoystickMovement(`playstick-inner-${comp}`, config.hapticEnabled);
+          return;
+        }
+
+        // 2. LT/RT custom sliced triggers
+        if (comp.endsWith('_TRIGGER')) {
+          const tDiv = document.createElement('div');
+          const isLeft = comp === 'LEFT_TRIGGER';
+          tDiv.className = `trigger-custom ${isLeft ? 'trigger-custom-left' : 'trigger-custom-right'}`;
+          tDiv.style.width = '55px';
+          tDiv.style.height = '48px';
+          tDiv.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(tDiv.style, styles);
+          
+          tDiv.innerHTML = isLeft ? '<div>L</div><div>T</div>' : '<div>R</div><div>T</div>';
+          setupGamepadButtonEvents(tDiv, config.displayName, config.hapticEnabled);
+          container.appendChild(tDiv);
+          return;
+        }
+
+        // 3. Capsule bumpers (LB/RB)
+        if (comp.endsWith('_SHOULDER')) {
+          const bDiv = document.createElement('div');
+          bDiv.className = 'shoulder-capsule';
+          bDiv.style.width = '75px';
+          bDiv.style.height = '32px';
+          bDiv.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(bDiv.style, styles);
+          bDiv.innerText = comp === 'LEFT_SHOULDER' ? 'LSHLDR' : 'RSHLDR';
+          setupGamepadButtonEvents(bDiv, config.displayName, config.hapticEnabled);
+          container.appendChild(bDiv);
+          return;
+        }
+
+        // 4. Dpad Diamond group
+        if (comp === 'DPAD') {
+          const dDiv = document.createElement('div');
+          dDiv.className = 'dpad-cross-bg';
+          dDiv.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(dDiv.style, styles);
+
+          dDiv.innerHTML = `
+            <div class="dpad-btn-individual" style="top:0; left:36px;" id="dpad-up"><div class="dpad-arrow-cyan dpad-arrow-up"></div></div>
+            <div class="dpad-btn-individual" style="bottom:0; left:36px;" id="dpad-down"><div class="dpad-arrow-cyan dpad-arrow-down"></div></div>
+            <div class="dpad-btn-individual" style="top:36px; left:0;" id="dpad-left"><div class="dpad-arrow-cyan dpad-arrow-left"></div></div>
+            <div class="dpad-btn-individual" style="top:36px; right:0;" id="dpad-right"><div class="dpad-arrow-cyan dpad-arrow-right"></div></div>
+          `;
+          container.appendChild(dDiv);
+          setTimeout(() => {
+            setupGamepadButtonEvents(document.getElementById('dpad-up'), 'Dpad Up', config.hapticEnabled);
+            setupGamepadButtonEvents(document.getElementById('dpad-down'), 'Dpad Down', config.hapticEnabled);
+            setupGamepadButtonEvents(document.getElementById('dpad-left'), 'Dpad Left', config.hapticEnabled);
+            setupGamepadButtonEvents(document.getElementById('dpad-right'), 'Dpad Right', config.hapticEnabled);
+          }, 0);
+          return;
+        }
+
+        // 5. Face buttons Diamond group (X Top, B Bottom, Y Left, A Right)
+        if (comp === 'FACE_BUTTONS') {
+          const fDiv = document.createElement('div');
+          fDiv.className = 'face-diamond-bg';
+          fDiv.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(fDiv.style, styles);
+
+          fDiv.innerHTML = `
+            <div class="face-btn-individual face-btn-x" style="top:0; left:36px;" id="face-x">X</div>
+            <div class="face-btn-individual face-btn-b" style="bottom:0; left:36px;" id="face-b">B</div>
+            <div class="face-btn-individual face-btn-y" style="top:36px; left:0;" id="face-y">Y</div>
+            <div class="face-btn-individual face-btn-a" style="top:36px; right:0;" id="face-a">A</div>
+          `;
+          container.appendChild(fDiv);
+          setTimeout(() => {
+            setupGamepadButtonEvents(document.getElementById('face-x'), 'Face X', config.hapticEnabled);
+            setupGamepadButtonEvents(document.getElementById('face-b'), 'Face B', config.hapticEnabled);
+            setupGamepadButtonEvents(document.getElementById('face-y'), 'Face Y', config.hapticEnabled);
+            setupGamepadButtonEvents(document.getElementById('face-a'), 'Face A', config.hapticEnabled);
+          }, 0);
+          return;
+        }
+
+        // 6. Individual Dpad buttons
+        if (comp.startsWith('DPAD_')) {
+          const dirLetter = comp.split('_').pop();
+          const dBtn = document.createElement('div');
+          dBtn.className = 'dpad-btn-individual';
+          dBtn.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(dBtn.style, styles);
+          
+          const arrowDir = dirLetter.toLowerCase();
+          dBtn.innerHTML = `<div class="dpad-arrow-cyan dpad-arrow-${arrowDir}"></div>`;
+          
+          setupGamepadButtonEvents(dBtn, `Dpad ${dirLetter}`, config.hapticEnabled);
+          container.appendChild(dBtn);
+          return;
+        }
+
+        // 7. Individual Face buttons
+        if (comp.startsWith('FACE_BUTTON_')) {
+          const letter = comp.split('_').pop();
+          const fBtn = document.createElement('div');
+          fBtn.className = `face-btn-individual face-btn-${letter.toLowerCase()}`;
+          fBtn.style.opacity = config.opacity;
+          const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+          Object.assign(fBtn.style, styles);
+          
+          fBtn.innerText = letter;
+          setupGamepadButtonEvents(fBtn, `Face ${letter}`, config.hapticEnabled);
+          container.appendChild(fBtn);
+          return;
+        }
+
+        // 8. Select/Start/Home/Capture circles
+        const btn = document.createElement('div');
+        btn.className = 'central-btn-circle';
+        btn.style.opacity = config.opacity;
+        const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+        Object.assign(btn.style, styles);
+        
+        if (comp === 'SELECT_BUTTON') btn.innerText = '−';
+        else if (comp === 'START_BUTTON') btn.innerText = '+';
+        else if (comp === 'HOME_BUTTON') btn.innerHTML = '⌂';
+        else if (comp === 'CAPTURE_BUTTON') btn.innerText = '○';
+
+        setupGamepadButtonEvents(btn, config.displayName, config.hapticEnabled);
+        container.appendChild(btn);
+      });
+    }
+
+    // Touch feedback settings
+    function setupGamepadButtonEvents(element, name, isHapticOnButton) {
+      if (!element) return;
+      
+      const startHandler = (e) => {
+        e.preventDefault();
+        element.style.background = 'rgba(0, 255, 255, 0.3)';
+        
+        let logMsg = `Gamepad Event: ${name} Pressed`;
+        if (globalHaptic && isHapticOnButton) {
+          logMsg += ` (⚡ Haptic Vibration: Intensity ${hapticIntensity})`;
+        } else if (!globalHaptic) {
+          logMsg += ` (Blocked: Global Haptics OFF)`;
+        } else {
+          logMsg += ` (Blocked: Button Haptics OFF)`;
+        }
+        console.log(logMsg);
+      };
+
+      const endHandler = (e) => {
+        element.style.background = '';
+      };
+
+      element.addEventListener('mousedown', startHandler);
+      element.addEventListener('mouseup', endHandler);
+      element.addEventListener('mouseleave', endHandler);
+
+      element.addEventListener('touchstart', startHandler);
+      element.addEventListener('touchend', endHandler);
+    }
+
+    // Analog stick touch dragging
+    function setupJoystickMovement(id, isHapticOnButton) {
+      const stick = document.getElementById(id);
+      if (!stick) return;
+
+      let active = false;
+      
+      const onMove = (clientX, clientY, rect) => {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        let dx = clientX - centerX;
+        let dy = clientY - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        // Decoupled travel limits matching Kotlin AnalogStick fix
+        const valueMaxRadius = 42;  // drag distance for full deflection (value = 1.0)
+        const renderMaxRadius = 16; // visual limit containing knob flush with outer ring
+        
+        const normalized = Math.min(1.0, dist / valueMaxRadius);
+        
+        let visualX = 0;
+        let visualY = 0;
+        if (dist > 0) {
+          visualX = (dx / dist) * normalized * renderMaxRadius;
+          visualY = (dy / dist) * normalized * renderMaxRadius;
+        }
+
+        stick.style.transform = `translate(${visualX}px, ${visualY}px)`;
+        
+        if (normalized > 0.3 && globalHaptic && isHapticOnButton) {
+          console.log(`Analog Drag Haptic Fired: magnitude=${normalized.toFixed(2)}`);
+        }
+      };
+
+      const startDrag = (e) => {
+        active = true;
+        const rect = stick.parentElement.getBoundingClientRect();
+        
+        const moveHandler = (moveEvent) => {
+          if (!active) return;
+          const touch = moveEvent.touches ? moveEvent.touches[0] : moveEvent;
+          onMove(touch.clientX, touch.clientY, rect);
+        };
+
+        const stopDrag = () => {
+          active = false;
+          stick.style.transform = 'translate(0px, 0px)';
+          window.removeEventListener('mousemove', moveHandler);
+          window.removeEventListener('mouseup', stopDrag);
+          window.removeEventListener('touchmove', moveHandler);
+          window.removeEventListener('touchend', stopDrag);
+        };
+
+        window.addEventListener('mousemove', moveHandler);
+        window.addEventListener('mouseup', stopDrag);
+        window.addEventListener('touchmove', moveHandler);
+        window.addEventListener('touchend', stopDrag);
+      };
+
+      stick.addEventListener('mousedown', startDrag);
+      stick.addEventListener('touchstart', startDrag);
+    }
+
+    // CUSTOMIZER GRID COMPOSABLE RENDERER
+    function renderCustomizerButtons() {
+      const container = document.getElementById('customizer-drag-canvas');
+      container.innerHTML = '';
+
+      Object.keys(buttonConfigs).forEach(comp => {
+        const config = buttonConfigs[comp];
+        if (!config.visible) return;
+
+        // Skip ungrouped
+        if (faceButtonsGrouped && comp.startsWith('FACE_BUTTON_')) return;
+        if (!faceButtonsGrouped && comp === 'FACE_BUTTONS') return;
+        if (dpadGrouped && comp.startsWith('DPAD_')) return;
+        if (!dpadGrouped && comp === 'DPAD') return;
+
+        const cDiv = document.createElement('div');
+        cDiv.className = `gamepad-btn customizer-btn ${selectedComponent === comp ? 'selected' : ''}`;
+        
+        // Exact forms matching gamepad
+        if (comp.endsWith('ANALOG_STICK')) {
+          cDiv.style.width = '70px';
+          cDiv.style.height = '70px';
+          cDiv.style.borderRadius = '50%';
+        } else if (comp.endsWith('_TRIGGER')) {
+          cDiv.style.width = '55px';
+          cDiv.style.height = '48px';
+          cDiv.style.borderRadius = comp === 'LEFT_TRIGGER' ? '0 12px 0 0' : '12px 0 0 0';
+        } else if (comp.endsWith('_SHOULDER')) {
+          cDiv.style.width = '65px';
+          cDiv.style.height = '30px';
+          cDiv.style.borderRadius = '20px';
+        } else if (comp === 'DPAD' || comp === 'FACE_BUTTONS') {
+          cDiv.style.width = '80px';
+          cDiv.style.height = '80px';
+        } else {
+          cDiv.style.width = comp === 'HOME_BUTTON' ? '30px' : '38px';
+          cDiv.style.height = comp === 'HOME_BUTTON' ? '30px' : '22px';
+          cDiv.style.borderRadius = comp === 'HOME_BUTTON' ? '50%' : '8px';
+        }
+
+        cDiv.style.opacity = config.opacity;
+        const styles = getAnchorStyles(config.anchor, config.offsetX, config.offsetY, config.scale);
+        Object.assign(cDiv.style, styles);
+
+        cDiv.innerText = comp.split('_')[0];
+        if (comp === 'SELECT_BUTTON') cDiv.innerText = 'SEL';
+        if (comp === 'START_BUTTON') cDiv.innerText = 'STA';
+        if (comp === 'SETTINGS_BUTTON') cDiv.innerText = '⚙';
+        
+        cDiv.onmousedown = (e) => startComponentDrag(e, comp);
+        cDiv.ontouchstart = (e) => startComponentDrag(e, comp);
+
+        container.appendChild(cDiv);
+      });
+    }
+
+    // Component drag bounds check
+    function startComponentDrag(e, comp) {
+      e.stopPropagation();
+      e.preventDefault();
+      
+      selectedComponent = comp;
+      renderCustomizerButtons();
+      openPropertyPanel(comp);
+
+      isDragging = true;
+      const touch = e.touches ? e.touches[0] : e;
+      dragStartX = touch.clientX;
+      dragStartY = touch.clientY;
+
+      const config = buttonConfigs[comp];
+      initialComponentOffsetX = config.offsetX;
+      initialComponentOffsetY = config.offsetY;
+    }
+
+    function onDragMove(e) {
+      if (!isDragging || !selectedComponent) return;
+      
+      const touch = e.touches ? e.touches[0] : e;
+      const deltaX = touch.clientX - dragStartX;
+      const deltaY = touch.clientY - dragStartY;
+
+      const baseHeight = 320; 
+      const normDeltaX = deltaX / baseHeight;
+      const normDeltaY = deltaY / baseHeight;
+
+      const config = buttonConfigs[selectedComponent];
+      let newOffsetX = Math.max(-0.5, Math.min(0.5, initialComponentOffsetX + normDeltaX));
+      let newOffsetY = Math.max(-0.5, Math.min(0.5, initialComponentOffsetY + normDeltaY));
+
+      buttonConfigs[selectedComponent].offsetX = parseFloat(newOffsetX.toFixed(3));
+      buttonConfigs[selectedComponent].offsetY = parseFloat(newOffsetY.toFixed(3));
+
+      renderCustomizerButtons();
+    }
+
+    function onDragEnd() {
+      isDragging = false;
+    }
+
+    // Customizer Side Drawer Property Editor
+    function openPropertyPanel(comp) {
+      const config = buttonConfigs[comp];
+      document.getElementById('floating-property-panel').style.display = 'flex';
+      document.getElementById('panel-component-title').innerText = config.displayName;
+      
+      document.getElementById('prop-visible-switch').checked = config.visible;
+      document.getElementById('prop-haptic-switch').checked = config.hapticEnabled;
+      document.getElementById('prop-anchor-select').value = config.anchor;
+      document.getElementById('prop-opacity-slider').value = config.opacity;
+      document.getElementById('prop-scale-slider').value = config.scale;
+    }
+
+    function deselectComponent() {
+      selectedComponent = null;
+      document.getElementById('floating-property-panel').style.display = 'none';
+      renderCustomizerButtons();
+    }
+
+    function updateSelectedProp(property, value) {
+      if (!selectedComponent) return;
+      buttonConfigs[selectedComponent][property] = value;
+      
+      if (property === 'visible' && value === false) {
+        deselectComponent();
+      } else {
+        renderCustomizerButtons();
+      }
+    }
+
+    function resetSelectedPosition() {
+      if (!selectedComponent) return;
+      buttonConfigs[selectedComponent].offsetX = 0;
+      buttonConfigs[selectedComponent].offsetY = 0;
+      renderCustomizerButtons();
+      showToast('Position reset to center');
+    }
+
+    // Customizer drawer
+    function openCustomizerMenu() {
+      document.getElementById('customizer-options-overlay').style.display = 'flex';
+      document.getElementById('customizer-face-grouped').checked = faceButtonsGrouped;
+      document.getElementById('customizer-dpad-grouped').checked = dpadGrouped;
+    }
+
+    function closeCustomizerMenu() {
+      document.getElementById('customizer-options-overlay').style.display = 'none';
+    }
+
+    function toggleGroupedMode(type, checked) {
+      if (type === 'face') {
+        faceButtonsGrouped = checked;
+        showToast(`Face Buttons: ${checked ? 'Grouped' : 'Split'}`);
+      } else if (type === 'dpad') {
+        dpadGrouped = checked;
+        showToast(`D-Pad: ${checked ? 'Grouped' : 'Split'}`);
+      }
+      renderCustomizerButtons();
+    }
+
+    function mockImportJSON() {
+      showToast('Import config completed successfully');
+      closeCustomizerMenu();
+    }
+
+    function mockExportJSON() {
+      showToast('Configuration exported');
+      closeCustomizerMenu();
+    }
+
+    function resetCustomizerToDefaults() {
+      buttonConfigs = JSON.parse(JSON.stringify(defaultButtonConfigs));
+      faceButtonsGrouped = true;
+      dpadGrouped = true;
+      deselectComponent();
+      closeCustomizerMenu();
+      renderCustomizerButtons();
+      showToast('Restored default positions');
+    }
+
+    function saveCustomLayout() {
+      showToast('Configuration profile saved');
+      navigateTo('main_menu');
+    }
+
+    // Connection Lost dialog reconnect
+    function reconnectFromLost() {
+      navigateTo('connect_screen');
+      showToast('Connecting...');
+    }
+
+    // Reset everything back to stock
+    function resetMockupState() {
+      buttonConfigs = JSON.parse(JSON.stringify(defaultButtonConfigs));
+      faceButtonsGrouped = true;
+      dpadGrouped = true;
+      globalHaptic = true;
+      hapticIntensity = 2;
+      pollingDelay = 10;
+      activeProfile = 'Default Layout';
+      profiles = ['Default Layout', '1q', 'Racing Config'];
+      
+      document.getElementById('settings-global-haptic').checked = true;
+      document.getElementById('haptic-intensity-val').innerText = '2';
+      document.getElementById('intensity-desc').innerText = 'Medium';
+      document.getElementById('polling-delay-val').innerText = '10';
+      
+      setMockTheme('dark');
+      setAccent('cyan', '#00ffff');
+      renderProfiles();
+      renderHistory();
+      deselectComponent();
+      navigateTo('main_menu');
+      showToast('All app preferences reset');
+    }
+
+    function mockOpenLink(name) {
+      showToast(`Mock: redirecting to ${name}`);
+    }
+  </script>
+</body>
+</html>

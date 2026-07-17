@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VirtualGamePad — Settings</title>
+<style>
+  :root{
+    --bg:#120D08; --surface:#2B2117; --muted:#856647; --text:#FAFAFA; --accent:#EA943E;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+    transition:background .35s ease, color .35s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* status bar */
+  .statusbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 26px 10px; font-size:15px; letter-spacing:.02em; color:var(--text);
+  }
+  .statusbar .icons{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text); opacity:.85; }
+  .pill{ border:1.5px solid var(--text); border-radius:10px; padding:1px 8px; font-size:12px; opacity:.9; }
+
+  header.topbar{
+    text-align:center; padding:6px 0 22px; border-bottom:1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    position:relative;
+  }
+  header.topbar h1{
+    margin:0; font-size:30px; font-weight:400; letter-spacing:.02em; color:color-mix(in srgb, var(--text) 78%, var(--muted));
+  }
+
+  main{
+    max-width:1500px; margin:0 auto; padding:34px 44px 10px;
+    display:grid; grid-template-columns:1fr 1fr; gap:40px 60px;
+  }
+  @media (max-width:900px){ main{ grid-template-columns:1fr; } }
+
+  .section-label{
+    font-size:15px; letter-spacing:.06em; color:color-mix(in srgb, var(--text) 55%, var(--muted));
+    margin-bottom:26px;
+  }
+
+  .field-label{ font-size:19px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .info-dot{
+    width:18px; height:18px; border-radius:50%; border:1.5px solid var(--muted);
+    display:inline-flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); font-weight:700;
+  }
+
+  /* theme circle grid */
+  .theme-grid{
+    display:flex; flex-wrap:wrap; gap:18px; margin-bottom:10px;
+  }
+  .dot-chip{
+    width:78px; height:78px; border-radius:50%; flex-shrink:0;
+    background:rgba(128,128,128,.22);
+    border:1px solid rgba(128,128,128,.35);
+    display:flex; align-items:center; justify-content:center;
+    padding:5px;
+  }
+  .theme-dot{
+    width:64px; height:64px; border-radius:50%; cursor:pointer; position:relative;
+    flex-shrink:0; aspect-ratio:1/1;
+    border:2px solid transparent; transition:transform .15s ease, border-color .15s ease;
+  }
+  .theme-dot:hover{ transform:translateY(-2px) scale(1.04); }
+  .theme-dot.selected{
+    border-color:var(--text);
+    box-shadow:0 0 0 3px rgba(128,128,128,.22), 0 0 0 6px var(--accent);
+  }
+  .theme-dot.selected::after{
+    content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:19px; font-weight:900; color:#fff; text-shadow:0 0 3px rgba(0,0,0,.8), 0 0 1px rgba(0,0,0,.9);
+  }
+
+  .selected-name{
+    margin-top:18px; font-size:20px; font-weight:700;
+    border:1.5px solid var(--muted); border-radius:12px; padding:16px 20px;
+    display:inline-flex; align-items:center; gap:10px; min-width:280px;
+  }
+  .selected-name .swatch{ width:16px; height:16px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+
+  /* polling interval */
+  .poll-row{ display:flex; align-items:center; gap:14px; margin-top:8px; }
+  .chev{
+    width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+    color:var(--text); opacity:.85; cursor:pointer; font-size:18px; user-select:none;
+  }
+  .poll-box{
+    border:1.5px solid var(--muted); border-radius:12px; padding:14px 30px;
+    font-size:22px; color:var(--accent); font-weight:700; min-width:70px; text-align:center;
+  }
+
+  /* behavior toggles */
+  .toggle-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 0; font-size:19px; gap:20px;
+  }
+  .toggle{
+    width:64px; height:34px; border-radius:20px; border:1.5px solid var(--muted);
+    background:transparent; position:relative; cursor:pointer; flex-shrink:0;
+  }
+  .toggle .knob{
+    position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
+    background:var(--accent); transition:left .18s ease;
+  }
+  .toggle.off .knob{ background:var(--muted); }
+  .toggle.on .knob{ left:33px; }
+
+  footer.actions{
+    display:flex; gap:20px; padding:38px 44px 34px; max-width:1500px; margin:0 auto;
+  }
+  .btn{
+    flex:1; text-align:center; padding:20px; border-radius:16px; font-size:20px; font-weight:700;
+    cursor:pointer; border:2px solid var(--muted); background:transparent; color:var(--text);
+    transition:opacity .15s ease;
+  }
+  .btn:hover{ opacity:.85; }
+  .btn.save{ border-color:var(--accent); color:var(--accent); }
+  .btn.cancel{ border-color:#EA5A5A; color:#EA5A5A; }
+
+  .scrubber{ width:220px; height:4px; border-radius:2px; background:color-mix(in srgb, var(--text) 40%, transparent); margin:6px auto 0; }
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <span>9:51</span>
+    <div class="icons">
+      <span>0.29 KB/s</span>
+      <span>📶</span>
+      <span class="pill">✕</span>
+      <span class="pill">99</span>
+      <span>⚡</span>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <h1>Settings</h1>
+  </header>
+
+  <main>
+    <section>
+      <div class="section-label">01 · DISPLAY</div>
+
+      <div class="field-label">Theme Color</div>
+      <div class="theme-grid" id="themeGrid"></div>
+      <div class="selected-name"><span class="swatch" id="selSwatch"></span><span id="selName">Molten Amber</span></div>
+
+      <div class="field-label" style="margin-top:38px;">
+        Polling Interval (ms) <span class="info-dot">i</span>
+      </div>
+      <div class="poll-row">
+        <span class="chev" onclick="adjustPoll(-1)">⌄</span>
+        <div class="poll-box" id="pollVal">80</div>
+        <span class="chev" onclick="adjustPoll(1)">⌃</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">02 · BEHAVIOR</div>
+      <div class="toggle-row">
+        <span>Remember IP Address and Port</span>
+        <button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><span class="knob"></span></button>
+      </div>
+      <div class="toggle-row">
+        <span>Haptic Feedback (Vibrations)</span>
+        <button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><span class="knob"></span></button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="actions">
+    <button class="btn">Reset</button>
+    <button class="btn save">Save</button>
+    <button class="btn cancel">Cancel</button>
+  </footer>
+
+  <div class="scrubber"></div>
+
+<script>
+const palettes = [
+  { name: "Crimson Arcade",   bg:"#120808", surface:"#2B1717", muted:"#854747", text:"#FAFAFA", accent:"#EA3E3E" },
+  { name: "Molten Amber",     bg:"#120D08", surface:"#2B2117", muted:"#856647", text:"#FAFAFA", accent:"#EA943E" },
+  { name: "Golden Circuit",   bg:"#121208", surface:"#2B2B17", muted:"#858547", text:"#FAFAFA", accent:"#EAEA3E" },
+  { name: "Terminal Phosphor",bg:"#08120D", surface:"#172B21", muted:"#478566", text:"#FAFAFA", accent:"#3EEA94" },
+  { name: "Glacier Cyan",     bg:"#081012", surface:"#17282B", muted:"#477A85", text:"#FAFAFA", accent:"#3ECDEA" },
+  { name: "Slate Blue",       bg:"#080A12", surface:"#171C2B", muted:"#475785", text:"#FAFAFA", accent:"#3E69EA" },
+  { name: "Deep Violet",      bg:"#0B0812", surface:"#1E172B", muted:"#5C4785", text:"#FAFAFA", accent:"#773EEA" },
+  { name: "Neon Orchid",      bg:"#110812", surface:"#29172B", muted:"#7F4785", text:"#FAFAFA", accent:"#DB3EEA" },
+  { name: "Bubblegum Pulse",  bg:"#12080D", surface:"#2B1721", muted:"#854766", text:"#FAFAFA", accent:"#EA3E94" },
+  { name: "Mono Steel",       bg:"#0A0A0A", surface:"#242424", muted:"#6B6B6B", text:"#FAFAFA", accent:"#E0E0E0" },
+  { name: "Paper Arcade",     bg:"#F5F3EF", surface:"#E7E2D8", muted:"#A39C8C", text:"#171512", accent:"#D9432E" },
+  { name: "Frost Console",    bg:"#F1F6F8", surface:"#DFEAEE", muted:"#87A2AC", text:"#0E1A1F", accent:"#1E7FB8" },
+  { name: "Mint Cartridge",   bg:"#F1F7F2", surface:"#DFEDE2", muted:"#87AB90", text:"#101C13", accent:"#1E9E5C" },
+  { name: "Ivory Blaze",      bg:"#F7F6F3", surface:"#EAE6DD", muted:"#B0A897", text:"#161310", accent:"#EA6E1E" },
+  { name: "Lilac Circuit",    bg:"#F5F2F7", surface:"#E7E0EC", muted:"#A796B0", text:"#17121B", accent:"#8A3EEA" },
+];
+
+let selectedIndex = 1; // Molten Amber, matching the current screenshot
+let pollValue = 80;
+
+function polar(cx, cy, r, angleDeg){
+  const a = (angleDeg - 90) * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+}
+
+function donutWedgePath(cx, cy, innerR, outerR, startAngle, endAngle){
+  const [ox1, oy1] = polar(cx, cy, outerR, startAngle);
+  const [ox2, oy2] = polar(cx, cy, outerR, endAngle);
+  const [ix1, iy1] = polar(cx, cy, innerR, startAngle);
+  const [ix2, iy2] = polar(cx, cy, innerR, endAngle);
+  const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+  return `M ${ix1} ${iy1} L ${ox1} ${oy1} A ${outerR} ${outerR} 0 ${largeArc} 1 ${ox2} ${oy2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${largeArc} 0 ${ix1} ${iy1} Z`;
+}
+
+function petalSvg(p){
+  const colors = [p.bg, p.surface, p.muted, p.text, p.accent];
+  const cx = 50, cy = 50, innerR = 9, outerR = 49;
+  const step = 360 / colors.length;
+  const paths = colors.map((c, i) => {
+    const d = donutWedgePath(cx, cy, innerR, outerR, i * step, (i + 1) * step);
+    return `<path d="${d}" fill="${c}"></path>`;
+  }).join('');
+  return `<svg viewBox="0 0 100 100" width="100%" height="100%">${paths}</svg>`;
+}
+
+function applyTheme(p){
+  const root = document.documentElement.style;
+  root.setProperty('--bg', p.bg);
+  root.setProperty('--surface', p.surface);
+  root.setProperty('--muted', p.muted);
+  root.setProperty('--text', p.text);
+  root.setProperty('--accent', p.accent);
+  document.getElementById('selName').textContent = p.name;
+  document.getElementById('selSwatch').style.background = p.accent;
+}
+
+function selectTheme(i){
+  selectedIndex = i;
+  document.querySelectorAll('.theme-dot').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  applyTheme(palettes[i]);
+}
+
+function adjustPoll(dir){
+  pollValue = Math.max(10, Math.min(500, pollValue + dir * 5));
+  document.getElementById('pollVal').textContent = pollValue;
+}
+
+const grid = document.getElementById('themeGrid');
+palettes.forEach((p, i) => {
+  const chip = document.createElement('div');
+  chip.className = 'dot-chip';
+
+  const dot = document.createElement('div');
+  dot.className = 'theme-dot' + (i === selectedIndex ? ' selected' : '');
+  dot.innerHTML = petalSvg(p);
+  dot.title = p.name;
+  dot.onclick = () => selectTheme(i);
+
+  chip.appendChild(dot);
+  grid.appendChild(chip);
+});
+
+applyTheme(palettes[selectedIndex]);
+</script>
+
+</body>
+</html>

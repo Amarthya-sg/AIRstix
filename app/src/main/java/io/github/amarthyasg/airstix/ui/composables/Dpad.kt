@@ -41,7 +41,7 @@ import io.github.amarthyasg.airstix.data.ButtonConfig
 const val DpadGroupSizeRatio = 0.45f
 
 /** Fraction of layout height used by each D-pad button (slightly smaller to prevent overlap). */
-const val DpadButtonSizeRatio = 0.14f
+const val DpadButtonSizeRatio = 0.17f
 
 private data class DpadButtonSlot(
     val type: DpadButtonType,
@@ -236,7 +236,7 @@ fun Dpad(
     gamepadState: GamepadReading,
     hapticEnabled: Boolean = true,
 ) {
-    val buttonSize = size * 0.31f
+    val buttonSize = size * 0.36f
     Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
         DpadButton(
             type = DpadButtonType.UP,
